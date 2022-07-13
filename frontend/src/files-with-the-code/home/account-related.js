@@ -1,16 +1,28 @@
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Logout from './logout'
 const axios = require('axios').default;
 
 function AccountRelated() {
     async function updateUserHandler(event) {
         event.preventDefault();
+
+        axios.post('/api/v1/account/update', {
+            name: event.target[0].value,
+            password: event.target[1].value
+        }).then(res => {
+            toast('Account updated!')
+        }).catch(error => {
+            toast.error(error.response.data.message)
+        })
     }
 
     return (
-        <div className='entryForm'>
-            <form onSubmit={updateUserHandler}>
-                <h2>Update Account</h2>
+        <div className='rightColumn'>
+            <br/>
+            <form onSubmit={updateUserHandler} className='entryForm'>
+                <br/>
+                Update Account
                 Name:
                 <br/>
                 <input id='Your Name' type='text' name='name' placeholder="name"/>
@@ -21,6 +33,8 @@ function AccountRelated() {
                 <br/>
                 <button type='submit'>Register</button>
             </form>
+            <br/>
+            <Logout/>
             <ToastContainer/>
         </div>
     )

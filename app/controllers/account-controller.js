@@ -1,21 +1,19 @@
 const UserSchema = require('../schemas/user-schema')
 const { StatusCodes } = require('http-status-codes')
 
-const updateAccount = (req, res) => {
-    const { name, password } = req.body
-    const updateObject = {}
-
-    password ?? (Object.password = password)
-    console.log(password)
-
-    if (name) {
-        updateObject.name = name
-    }
+const updateAccount = async (req, res) => {
+    console.log(req.body)
 
     const user = await UserSchema.findByIdAndUpdate(
         req.user._id,
-        updateObject
-    )
+        req.body
+    ).select('name')
+
+    const token = user.createJWT()
+
+    res.status(StatusCodes.OK)
+    .cookie('token', token)
+    .send({ name: user.name })
 }
 
 module.exports = {

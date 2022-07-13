@@ -13,6 +13,7 @@ const errorHandler = require('./middleware/error-handler')
 const authenticationMiddleware = require('./middleware/authentication-middleware')
 
 const authenticationRouter = require('./routers/authentication-router')
+const accountRouter = require('./routers/account-router')
 
 const app = express();
 app.use(express.static(path.join(__dirname, '../', 'frontend', 'build')))
@@ -25,6 +26,7 @@ app.use(helmet());
 app.use(cors())
 
 app.use('/api/v1/authentication', authenticationRouter)
+app.use('/api/v1/account', authenticationMiddleware, accountRouter)
 
 app.get('*', (req, res) => {
     res.sendFile('index.html', { root: path.join(__dirname, '../frontend/build/') });

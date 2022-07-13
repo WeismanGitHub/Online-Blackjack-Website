@@ -15,7 +15,7 @@ root.render(
             <Routes>
                 <Route exact path='/' element={<Home/>}/>
                 <Route exact path='/authentication' element={Authentication} />
-                <Route path="*" element={NotFound}/>
+                <Route path='*' element={NotFound}/>
             </Routes>
         </Router>
     </>

@@ -11,28 +11,30 @@ function GameRelated() {
     if (cookieExists('gameId')) {
         return (
             <div className='column'>
-                <button>
+                <br/>
+                <button className='bigButton'>
                     Rejoin Game
                 </button>
                 <br/>
-                <button>
+                <button className='bigButton'>
                     Leave Game
                 </button>
             </div>
         )
     } else {
         return (
-            <div className='column'>
-                <button>
+            <div className='leftColumn'>
+                <br/>
+                <button className='bigButton'>
                     Create Game
                 </button>
                 <br/>
                 <br/>
                 <div className='entryForm'>
                     <form onSubmit={joinGameHandler}>
-                        <h2>Enter Code</h2>
+                        Enter Code
                         <br/>
-                        <input type='text' name='code' placeholder='****'/>
+                        <input type='text' name='code' maxlength='4' placeholder='****' />
                         <br/>
                         <button type='submit'>Join Game</button>
                     </form>
