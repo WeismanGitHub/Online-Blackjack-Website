@@ -25,11 +25,11 @@ function Login() {
                 <h2>Login</h2>
                 Name:
                 <br/>
-                <input type='text' name='name' placeholder="name"/>
+                <input type='text' name='name' placeholder="name" maxlength='15' minlength='1'/>
                 <br/>
                 Password:
                 <br/>
-                <input type='password' name='password' placeholder="password"/>
+                <input type='password' name='password' placeholder="password" maxlength='50' minlength='6'/>
                 <br/>
                 <button type='submit'>Login</button>
             </form>

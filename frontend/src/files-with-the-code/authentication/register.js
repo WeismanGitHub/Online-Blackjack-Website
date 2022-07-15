@@ -26,11 +26,11 @@ function Register() {
                 <h2>Register</h2>
                 Name:
                 <br/>
-                <input id='Your Name' type='text' name='name' placeholder="name"/>
+                <input id='Your Name' type='text' name='name' placeholder="name" maxlength='15' minlength='1'/>
                 <br/>
                 Password:
                 <br/>
-                <input id='Your Password' type='password' placeholder="password" name='password'/>
+                <input id='Your Password' type='password' placeholder="password" name='password' maxlength='50' minlength='6'/>
                 <br/>
                 <button type='submit'>Register</button>
             </form>

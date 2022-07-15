@@ -4,6 +4,7 @@ import './styles.css';
 
 import Authentication from './files-with-the-code/authentication'
 import Home from './files-with-the-code/home'
+import Game from './files-with-the-code/game'
 
 const NotFound = (<h1>This page doesn't exist!</h1>)
 
@@ -14,6 +15,7 @@ root.render(
         <Router>
             <Routes>
                 <Route exact path='/' element={<Home/>}/>
+                <Route exact path='/game' element={<Game/>}/>
                 <Route exact path='/authentication' element={Authentication} />
                 <Route path='*' element={NotFound}/>
             </Routes>

@@ -1,3 +1,4 @@
+/* Main */
 * {
     margin: 0;
     padding: 0;
@@ -50,4 +51,36 @@ button {
 
 button:active {
     filter: brightness(95%);
+}
+
+.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translateY(50%);
+}
+
+/* Card Related */
+.card {
+    background-color: white;
+    width: 100px;
+    height: 150px;
+    border-radius: 10px;
+    border: 2px solid black;
+}
+
+.card:active {
+    filter: brightness(97.5%);
+}
+
+.icon {
+    background-color: white;
+    font-size: 500%;
+    user-select: none;
+}
+
+.name {
+    background-color: white;
+    font-size: 150%;
+    user-select: none;
 }

@@ -1,20 +1,42 @@
 import { ToastContainer, toast } from 'react-toastify';
-import { cookieExists, getCookie } from '../../helpers'
+import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
+import { cookieExists } from '../../helpers'
 const axios = require('axios').default;
 
 function GameRelated() {
-    async function joinGameHandler(event) {
+    const navigate = useNavigate();
+
+    function joinGame(event) {
         event.preventDefault();
+        
+        axios.post('/api/v1/game/join', { code: event.target[0].value })
+        .then(res => {
+            navigate('/game');
+        }).catch(error => {
+            toast.error(error.response.data.message)
+        })
     }
     
+    function createGame(event) {
+        event.preventDefault();
+
+        axios.post('/api/v1/game/create')
+        .then(res => {
+            navigate('/game');
+        }).catch(error => {
+            toast.error(error.response.data.message)
+        })
+    }
+
     if (cookieExists('gameId')) {
         return (
-            <div className='column'>
+            <div className='leftColumn'>
                 <br/>
                 <button className='bigButton'>
                     Rejoin Game
                 </button>
+                <br/>
                 <br/>
                 <button className='bigButton'>
                     Leave Game
@@ -25,16 +47,16 @@ function GameRelated() {
         return (
             <div className='leftColumn'>
                 <br/>
-                <button className='bigButton'>
+                <button className='bigButton' onClick={createGame}>
                     Create Game
                 </button>
                 <br/>
                 <br/>
                 <div className='entryForm'>
-                    <form onSubmit={joinGameHandler}>
+                    <form onSubmit={joinGame}>
                         Enter Code
                         <br/>
-                        <input type='text' name='code' maxlength='4' placeholder='****' />
+                        <input type='text' name='gameId' maxlength='24' minlength='24' placeholder='****' />
                         <br/>
                         <button type='submit'>Join Game</button>
                     </form>

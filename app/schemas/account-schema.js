@@ -3,14 +3,13 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 
-const UserSchema = new mongoose.Schema({
+const AccountSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Please provide a name.'],
         minlength: 1,
         maxlength: 15,
         trim: true,
-        unique: true,
     },
     password: {
         type: String,
@@ -19,7 +18,7 @@ const UserSchema = new mongoose.Schema({
         maxlength: 50,
         trim: true,
     },
-    GameId: {
+    gameId: {
         type: mongoose.Types.ObjectId,
     },
     balance: {
@@ -29,18 +28,27 @@ const UserSchema = new mongoose.Schema({
     }
 })
 
-UserSchema.pre('save', async function() {
+AccountSchema.pre('save', async function() {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
 });
 
-UserSchema.pre('findOneAndUpdate', async function() {
+AccountSchema.pre('findOneAndUpdate', async function() {
     const user = this.getUpdate();
+
+    if ((1 > user.name.length) || (user.name.length > 15)) {
+        throw new Error('Name must be between 1 and 15 characters.')
+    }
+
+    if ((6 > user.password.length) || (user.password.length > 50)) {
+        throw new Error('Password must be between 6 and 50 characters.')
+    }
+    
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
 });
 
-UserSchema.methods.createJWT = function() {
+AccountSchema.methods.createJWT = function() {
     return jwt.sign(
         { _id: this._id, name: this.name },
         process.env.JWT_SECRET,
@@ -48,8 +56,8 @@ UserSchema.methods.createJWT = function() {
     );
 };
 
-UserSchema.methods.checkPassword = async function(candidatePassword) {
+AccountSchema.methods.checkPassword = async function(candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.password);
 };
 
-module.exports = mongoose.model('users', UserSchema);
+module.exports = mongoose.model('users', AccountSchema);

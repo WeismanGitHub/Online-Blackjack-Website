@@ -1,6 +1,7 @@
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Logout from './logout'
+import DeleteAccount from './delete-account'
 const axios = require('axios').default;
 
 function AccountRelated() {
@@ -22,19 +23,22 @@ function AccountRelated() {
             <br/>
             <form onSubmit={updateUserHandler} className='entryForm'>
                 <br/>
-                Update Account
+                <div>Update Account</div>
                 Name:
                 <br/>
-                <input id='Your Name' type='text' name='name' placeholder="name"/>
+                <input id='Your Name' type='text' name='name' placeholder="name" maxlength='15' minlength='1'/>
                 <br/>
                 Password:
                 <br/>
-                <input id='Your Password' type='password' placeholder="password" name='password'/>
+                <input id='Your Password' type='password' placeholder="password" name='password' maxlength='50' minlength='6'/>
                 <br/>
-                <button type='submit'>Register</button>
+                <button type='submit'>Update</button>
             </form>
             <br/>
             <Logout/>
+            <br/>
+            <br/>
+            <DeleteAccount/>
             <ToastContainer/>
         </div>
     )

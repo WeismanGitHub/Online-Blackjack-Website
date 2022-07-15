@@ -1,7 +1,5 @@
-import { ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { cookieExists } from '../helpers'
-import Logout from './home/logout'
 import React from 'react';
 
 import AccountRelated from './home/account-related'
@@ -20,7 +18,6 @@ function Home() {
         <>
             <AccountRelated/>
             <GameRelated/>
-            <ToastContainer/>
         </>
     )
 }
