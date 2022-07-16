@@ -3,13 +3,27 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 
-const AccountSchema = new mongoose.Schema({
+// Just gotta put this in any schema and it'll be global. 
+// I tried to do it in app.js, but that didn't work for some reason. Maybe I did it wrong.
+mongoose.plugin(schema => {
+    schema.pre('findOneAndUpdate', setOptions);
+    schema.pre('updateMany', setOptions);
+    schema.pre('updateOne', setOptions);
+    schema.pre('update', setOptions);
+});
+
+function setOptions() {
+    this.setOptions({ new: true });
+}
+
+const UserSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Please provide a name.'],
         minlength: 1,
         maxlength: 15,
         trim: true,
+        unique: true 
     },
     password: {
         type: String,
@@ -28,12 +42,12 @@ const AccountSchema = new mongoose.Schema({
     }
 })
 
-AccountSchema.pre('save', async function() {
+UserSchema.pre('save', async function() {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
 });
 
-AccountSchema.pre('findOneAndUpdate', async function() {
+UserSchema.pre('findOneAndUpdate', async function() {
     const user = this.getUpdate();
 
     if ((1 > user.name.length) || (user.name.length > 15)) {
@@ -48,7 +62,8 @@ AccountSchema.pre('findOneAndUpdate', async function() {
     user.password = await bcrypt.hash(user.password, salt);
 });
 
-AccountSchema.methods.createJWT = function() {
+
+UserSchema.methods.createJWT = function() {
     return jwt.sign(
         { _id: this._id, name: this.name },
         process.env.JWT_SECRET,
@@ -56,8 +71,8 @@ AccountSchema.methods.createJWT = function() {
     );
 };
 
-AccountSchema.methods.checkPassword = async function(candidatePassword) {
+UserSchema.methods.checkPassword = async function(candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.password);
 };
 
-module.exports = mongoose.model('users', AccountSchema);
+module.exports = mongoose.model('users', UserSchema);

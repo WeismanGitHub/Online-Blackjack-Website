@@ -1,7 +1,7 @@
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Logout from './logout'
 import DeleteAccount from './delete-account'
+import Logout from './logout'
 const axios = require('axios').default;
 
 function AccountRelated() {

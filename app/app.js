@@ -13,7 +13,7 @@ const errorHandler = require('./middleware/error-handler')
 const authenticationMiddleware = require('./middleware/authentication-middleware')
 
 const authenticationRouter = require('./routers/authentication-router')
-const accountRouter = require('./routers/account-router')
+const userRouter = require('./routers/user-router')
 const gameRouter = require('./routers/game-router')
 
 const app = express();
@@ -27,7 +27,7 @@ app.use(helmet());
 app.use(cors())
 
 app.use('/api/v1/authentication', authenticationRouter)
-app.use('/api/v1/account', authenticationMiddleware, accountRouter)
+app.use('/api/v1/user', authenticationMiddleware, userRouter)
 app.use('/api/v1/game', authenticationMiddleware, gameRouter)
 
 app.get('*', (req, res) => {
@@ -40,17 +40,6 @@ const start = async () => {
     try {
         const port = process.env.PORT || 5000
         mongoose.connect(process.env.MONGO_URI)
-        
-        mongoose.plugin(schema => {
-            schema.pre('findOneAndUpdate', setOptions);
-            schema.pre('updateMany', setOptions);
-            schema.pre('updateOne', setOptions);
-            schema.pre('update', setOptions);
-        });
-        
-        function setOptions() {
-            this.setOptions({ new: true });
-        }
         
         console.log('Connected to database...')
         app.listen(port, console.log(`Server is starting on ${port}...`));

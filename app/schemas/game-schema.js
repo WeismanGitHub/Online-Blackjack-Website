@@ -12,8 +12,8 @@ const GameSchema = new mongoose.Schema({
     deck: [CardSchema],
     gameStage: {
         type: String, 
-        enum: ['Initial Betting', 'Initial Dealing', 'First Betting', 'Second Dealing'],
-        default: 'Initial Betting'
+        enum: ['Lobby', 'Initial Betting', 'Initial Dealing', 'First Betting', 'Second Dealing'],
+        default: 'Lobby'
     },
     players: [{
         type: PlayerSchema,
@@ -44,14 +44,12 @@ GameSchema.pre('save', function() {
         }
     }
 
-    this.players.push({ accountId: this.creatorId })
+    this.players.push({ userId: this.creatorId })
     this.deck = shuffle(this.deck)
 })
 
-function calculateValue() {
-    const game = this.getUpdate()
-
-    for (let player of game.players) {
+GameSchema.methods.checkValue = function() {
+    for (let player of this.game.players) {
         const totalPoints = 0
         const amountOfAces = 0;
 
@@ -64,19 +62,11 @@ function calculateValue() {
         for (let i = 0; i<=amountOfAces; i++) {
             if (totalPoints > 21) {
                 aceIndex = player.hand.findIndex((card => card.value == 11))
-                game.player.hand[aceIndex].value = 1
+                this.game.player.hand[aceIndex].value = 1
             }
         }
     }
 }
-
-GameSchema.pre('findOneAndUpdate', function() {
-    calculateValue()
-})
-
-GameSchema.pre('updateOne', function() {
-    calculateValue()
-})
 
 GameSchema.methods.shuffleCards = function() {
     this.deck = shuffle(this.deck)

@@ -1,9 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { cookieExists } from '../helpers'
+import Lobby from './game/lobby'
+import Play from './game/play'
 import React from 'react';
+const axios = require('axios').default;
 
-function Game() {
+async function Game() {
     const navigate = useNavigate()
+    const [gameStage, setGameStage] = React.useState((await axios.get('/api/v1/game')).stage);
 
     React.useEffect(()=> {
         if (!cookieExists('gameId')) {
@@ -11,21 +15,11 @@ function Game() {
         }
     }, [])
 
-    return (
-        <>
-            <div class='centered'>
-                <div className='card'>
-                    <br/>
-                    <div class='name'>
-                        Ace
-                    </div>
-                    <span class='icon'>
-                        &#9824;
-                    </span>
-                </div>
-            </div>
-        </>
-    )
+    if (gameStage == 'Lobby') {
+        return <Lobby/>
+    } else {
+        return <Play/>
+    }
 }
 
 export default Game;

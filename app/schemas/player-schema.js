@@ -2,9 +2,10 @@ const CardSchema = require('./card-schema')
 const mongoose = require('mongoose');
 
 const PlayerSchema = new mongoose.Schema({
-    accountId: {
+    userId: {
         type: mongoose.Types.ObjectId,
         required: [true, '[Server Error] Please provide a user id.'],
+        unique: true
     },
     hand: [CardSchema],
     playerStage: {

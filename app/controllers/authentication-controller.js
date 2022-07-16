@@ -1,18 +1,28 @@
-const AccountSchema = require('../schemas/account-schema')
+const UserSchema = require('../schemas/user-schema')
 const { StatusCodes } = require('http-status-codes')
 
 const register = async (req, res) => {
-    const user = await AccountSchema.create(req.body)
+    const user = await UserSchema.create(req.body)
+    .catch(err => {
+        if (err.message.includes('duplicate key error collection')) {
+            err.message = 'Must be unique.'
+        } else if (err.message.includes('validation failed: password:')) {
+            err.message = 'Password must be between 6 and 50 characters.'
+        } else if (err.message.includes('validation failed: name:')) {
+            err.message = 'Name must be between 1 and 15 characters.'
+        }
+    })
     const token = user.createJWT()
 
     res.status(StatusCodes.CREATED)
     .cookie('token', token)
+    .clearCookie('gameId')
     .redirect('/')
 }
 
 const login = async (req, res) => {
     const { name, password } = req.body
-    const user = await AccountSchema.findOne({ name: name })
+    const user = await UserSchema.findOne({ name: name })
 
     if (!user) {
         throw new Error('Please provide a valid name.')
@@ -28,12 +38,14 @@ const login = async (req, res) => {
 
     res.status(StatusCodes.OK)
     .cookie('token', token)
+    .clearCookie('gameId')
     .redirect('/')
 }
 
 const logout = (req, res) => {
     res.status(StatusCodes.OK)
-    .clearCookie("token")
+    .clearCookie('token')
+    .clearCookie('gameId')
     .redirect('/authentication')
 }
 
