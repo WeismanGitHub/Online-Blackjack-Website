@@ -1,21 +1,11 @@
 import React from 'react';
-const axios = require('axios').default;
 
 function Lobby() {
     return (
         <div class='rightColumn60Percent'>
-            {/* {players.map(player => {
-                axios.get('/apiv/1/user/' + player._id).then(player => {
-                    return player.name
-                })
-            })} */}
-            test
+            players
         </div>
     )
-    axios.get('/api/v1/game').then(players => {
-    }).catch(err => {
-        console.log(err)
-    })
 }
 
 // ACE

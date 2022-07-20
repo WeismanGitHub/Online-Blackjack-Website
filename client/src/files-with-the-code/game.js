@@ -1,11 +1,14 @@
+import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css'
 import { cookieExists } from '../helpers'
+import React, { useState } from 'react';
+import { getCookie } from '../helpers'
 import io from 'socket.io-client';
 import Lobby from './game/lobby'
-import Play from './game/play'
 import Chat from './game/chat'
-import React from 'react';
-const axios = require('axios').default;
+import Play from './game/play'
+import axios from 'axios'
 
 function Game() {
     const navigate = useNavigate()
@@ -14,19 +17,40 @@ function Game() {
         if (!cookieExists('gameId')) {
             navigate('/')
         }
-        
     }, [])
-    
-    const socket = io.connect('http://localhost:5000/');
 
-    socket.emit("join_room", 'hello world')
-    
-        return (
-            <>
-                <Lobby/>
-                <Chat/>
-            </>
-        )
+    const gameId = getCookie('gameId')
+    const socket = io.connect('/')
+    socket.gameId = gameId
+    socket.emit('joinGame', { gameId: gameId, token: getCookie('token') })
+
+    function leaveGame(event) {
+        event.preventDefault();
+
+        axios.post('/api/v1/game/leave')
+        .then(async (res) => {
+            await socket.emit('sendMessage', {
+                gameId: gameId,
+                token: getCookie('token'),
+                message: 'left!'
+            })
+            
+            navigate('/');
+        }).catch(error => {
+            toast.error(error.response.data.message)
+        })
+    }
+
+    return (
+        <>
+            <Chat socket={socket} gameId={gameId}/>
+            <button className='bigButton' onClick={leaveGame}>
+                Leave Game
+            </button>
+            <Lobby/>
+            <ToastContainer/>
+        </>
+    )
 }
 
 export default Game;

@@ -3,19 +3,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 
-// Just gotta put this in any schema and it'll be global. 
-// I tried to do it in app.js, but that didn't work for some reason. Maybe I did it wrong.
-mongoose.plugin(schema => {
-    schema.pre('findOneAndUpdate', setOptions);
-    schema.pre('updateMany', setOptions);
-    schema.pre('updateOne', setOptions);
-    schema.pre('update', setOptions);
-});
-
-function setOptions() {
-    this.setOptions({ new: true });
-}
-
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,

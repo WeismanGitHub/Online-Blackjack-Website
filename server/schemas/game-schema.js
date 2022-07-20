@@ -8,16 +8,15 @@ const suits = ['Heart', 'Club', 'Diamond', 'Spade']
 
 //do a log of every game played and associate it with players? idk
 const GameSchema = new mongoose.Schema({
-    creatorId: { type: mongoose.Types.ObjectId },
+    creatorId: { type: mongoose.Types.ObjectId, unique: true},
     deck: [CardSchema],
     gameStage: {
-        type: String, 
+        type: String,
         enum: ['Lobby', 'Initial Betting', 'Initial Dealing', 'First Betting', 'Second Dealing'],
         default: 'Lobby'
     },
     players: [{
         type: PlayerSchema,
-        minlength: [2, 'Min Players: 2'],
         maxlength: [6, 'Max Players: 6'],
     }]
 })

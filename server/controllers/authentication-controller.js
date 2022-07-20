@@ -1,3 +1,4 @@
+const { removePlayerFromGame } = require('../helpers')
 const UserSchema = require('../schemas/user-schema')
 const { StatusCodes } = require('http-status-codes')
 
@@ -5,7 +6,7 @@ const register = async (req, res) => {
     const user = await UserSchema.create(req.body)
     .catch(err => {
         if (err.message.includes('duplicate key error collection')) {
-            err.message = 'Must be unique.'
+            err.message = 'Name Must be unique.'
         } else if (err.message.includes('validation failed: password:')) {
             err.message = 'Password must be between 6 and 50 characters.'
         } else if (err.message.includes('validation failed: name:')) {
@@ -44,7 +45,9 @@ const login = async (req, res) => {
     .redirect('/')
 }
 
-const logout = (req, res) => {
+const logout = async (req, res) => {
+    await removePlayerFromGame(req.cookies.gameId, req.user._id)
+
     res.status(StatusCodes.OK)
     .clearCookie('token')
     .clearCookie('gameId')

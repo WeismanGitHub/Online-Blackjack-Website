@@ -1,49 +1,57 @@
 const UserSchema = require('../schemas/user-schema')
 const GameSchema = require('../schemas/game-schema')
+const { removePlayerFromGame } = require('../helpers')
 const { StatusCodes } = require('http-status-codes')
 
 const createGame = async (req, res) => {
     const userId = req.user._id
     const game = await GameSchema.create({ creatorId: userId })
+    .catch(async (err) => {
+        if (err.message.includes('duplicate key error collection')) {
+            const gameId = await UserSchema.findById(userId).select('-_id gameId')
+
+            res.status(StatusCodes.CONFLICT)
+            .cookie('gameId', gameId.gameId)
+            .redirect('/game')
+        } else {
+            throw new Error(err.message)
+        }
+    })
+    
     await UserSchema.updateOne({ _id: userId }, { gameId: game._id })
 
     res.status(StatusCodes.CREATED)
     .cookie('gameId', game._id)
     .redirect('/game')
-
 }
 
 const joinGame = async (req, res) => {
+    const gameId = req.body.gameId
+    const userId = req.user._id
+
     const updateData = await GameSchema.updateOne(
-        { _id: req.body.gameId },
-        { $addToSet: { players: { userId: req.user._id } } }
-    ).catch(err => {
-        throw new Error("Game Id doesn't exist.")
+        { _id: gameId },
+        { $addToSet: { players: { userId: userId } } },
+    ).catch(async err => {
+        if (err.message.includes('duplicate')) {
+            const gameId = await UserSchema.findById(userId).select('-_id gameId')
+            await removePlayerFromGame(gameId, req.user._id)
+        } else if (err.message.includes('Cast to ObjectId failed')) {
+            throw new Error("Game Id doesn't exist.")
+        }
     })
 
     if (updateData.modifiedCount) {
         res.status(StatusCodes.OK)
-        .cookie('gameId', game._id)
+        .cookie('gameId', gameId)
         .redirect('/game')
     } else {
-        throw new Error("Game Id doesn't exist.")
+        throw new Error('Please leave your current game.')
     }
 }
 
 const leaveGame = async (req, res) => {
-    const game = await GameSchema.findOneAndUpdate(
-        { _id: req.cookies.gameId },
-        { $pull: { players: { userId: req.user._id } } }
-    ).lean()
-
-    if (!game.players.length) {
-        await GameSchema.deleteOne( { _id: req.cookies.gameId })
-    }
-
-    await UserSchema.updateOne(
-        { _id: req.user._id },
-        { $unset: { gameId: "" } }
-    )
+    await removePlayerFromGame(req.cookies.gameId, req.user._id)
 
     res.status(StatusCodes.OK)
     .clearCookie('gameId')

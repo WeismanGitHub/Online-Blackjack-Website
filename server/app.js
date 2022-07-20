@@ -13,26 +13,20 @@ require('dotenv').config();
 
 const errorHandler = require('./middleware/error-handler')
 const authenticationMiddleware = require('./middleware/authentication-middleware')
+const socketAuthentication = require('./socket/socket-authentication')
 
 const authenticationRouter = require('./routers/authentication-router')
 const userRouter = require('./routers/user-router')
 const gameRouter = require('./routers/game-router')
-const chatHandler= require('./chat')
+const socketHandler= require('./socket/socket-handler')
 
 const app = express();
 app.use(express.static(path.join(__dirname, '../', 'client', 'build')))
 app.use(cors());
+const io = new Server(http.createServer(app));s
 
-const server = http.createServer(app);
-
-const io = new Server(server, {
-    cors: {
-        origin: 'http://localhost:5000',
-        methods: ['GET', 'POST'],
-    },
-});
-
-io.on('connection', chatHandler);
+io.use(socketAuthentication(socket, next))
+io.on('connection', socketHandler);
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
@@ -54,7 +48,8 @@ app.use(errorHandler)
 const start = async () => {
     try {
         const port = process.env.PORT || 5000
-        mongoose.connect(process.env.MONGO_URI)
+        mongoose.connect(process.env.MONGO_URI, { autoIndex: true })
+
         
         console.log('Connected to database...')
         server.listen(port, console.log(`Server is starting on ${port}...`));

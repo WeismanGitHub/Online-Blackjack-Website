@@ -1,4 +1,5 @@
 const UserSchema = require('../schemas/user-schema')
+const { removePlayerFromGame } = require('../helpers')
 const { StatusCodes } = require('http-status-codes')
 
 const updateUser = async (req, res) => {
@@ -15,8 +16,15 @@ const updateUser = async (req, res) => {
     .json({ message: 'Updated user!'})
 }
 
-const deleteUser = (req, res) => {
-    //delete from games
+const deleteUser = async (req, res) => {
+    const gameId = req.cookies.gameId
+    const userId = req.user._id
+
+    if (gameId) {
+        await removePlayerFromGame(gameId, userId)
+    }
+
+    await UserSchema.deleteOne({ _id: userId })
 
     res.status(StatusCodes.OK)
     .clearCookie('token')
