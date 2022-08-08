@@ -4,9 +4,16 @@ const { removePlayerFromGame } = require('../helpers')
 const { StatusCodes } = require('http-status-codes')
 
 const createGame = async (req, res) => {
-    const userId = req.user._id
-    const game = await GameSchema.create({ creatorId: userId })
-    .catch(async (err) => {
+    try {
+        const userId = req.user._id
+        const game = await GameSchema.create({ creatorId: userId })
+        
+        await UserSchema.updateOne({ _id: userId }, { gameId: game._id })
+    
+        res.status(StatusCodes.CREATED)
+        .cookie('gameId', game._id)
+        .redirect('/game')
+    } catch(err) {
         if (err.message.includes('duplicate key error collection')) {
             const gameId = await UserSchema.findById(userId).select('-_id gameId')
 
@@ -16,13 +23,7 @@ const createGame = async (req, res) => {
         } else {
             throw new Error(err.message)
         }
-    })
-    
-    await UserSchema.updateOne({ _id: userId }, { gameId: game._id })
-
-    res.status(StatusCodes.CREATED)
-    .cookie('gameId', game._id)
-    .redirect('/game')
+    }
 }
 
 const joinGame = async (req, res) => {

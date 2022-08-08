@@ -29,7 +29,7 @@ function Game() {
 
         axios.post('/api/v1/game/leave')
         .then(async (res) => {
-            await socket.emit('sendMessage', {
+            socket.emit('sendMessage', {
                 gameId: gameId,
                 token: getCookie('token'),
                 message: 'left!'

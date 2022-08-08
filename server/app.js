@@ -23,9 +23,9 @@ const socketHandler= require('./socket/socket-handler')
 const app = express();
 app.use(express.static(path.join(__dirname, '../', 'client', 'build')))
 app.use(cors());
-const io = new Server(http.createServer(app));s
+const io = new Server(http.createServer(app));
 
-io.use(socketAuthentication(socket, next))
+io.use((socket, next) => socketAuthentication(socket, next))
 io.on('connection', socketHandler);
 
 app.use(express.urlencoded({ extended: true }))
@@ -34,6 +34,12 @@ app.use(cookieParser());
 app.use(compression());
 app.use(helmet());
 app.use(cors())
+
+app.use((req, res, next) => {
+    console.log('Cookies: ', req.cookies);
+    console.log('Signed Cookies: ', req.signedCookies);
+    next()
+})
 
 app.use('/api/v1/authentication', authenticationRouter)
 app.use('/api/v1/user', authenticationMiddleware, userRouter)
@@ -52,7 +58,7 @@ const start = async () => {
 
         
         console.log('Connected to database...')
-        server.listen(port, console.log(`Server is starting on ${port}...`));
+        app.listen(port, console.log(`Server is starting on ${port}...`));
     } catch (error) {
         console.error(error);
     };

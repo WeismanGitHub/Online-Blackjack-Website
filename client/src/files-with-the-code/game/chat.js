@@ -26,7 +26,7 @@ function Chat({socket, gameId }) {
             }
         };
 
-        await socket.emit('sendMessage', messageData);
+        socket.volatile.emit('sendMessage', messageData);
         setMessages((list) => [...list, { message: currentMessage, userName: 'You' }]);
         setCurrentMessage('');
         }
