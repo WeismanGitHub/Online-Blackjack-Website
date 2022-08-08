@@ -2,7 +2,7 @@ import React from 'react';
 
 function Lobby() {
     return (
-        <div class='rightColumn60Percent'>
+        <div class='playersBox'>
             players
         </div>
     )

@@ -41,12 +41,22 @@ function Game() {
         })
     }
 
+    function copyId(event) {
+        event.preventDefault()
+
+        navigator.clipboard.writeText(gameId)
+        .then(() => {
+            toast('Copied!')
+        })
+    }
+
     return (
         <>
             <Chat socket={socket} gameId={gameId}/>
-            <button className='bigButton' onClick={leaveGame}>
+            <button className='leaveGameButton' onClick={leaveGame}>
                 Leave Game
             </button>
+            <button class='copyIdButton' onClick={copyId}>Copy Game ID</button>
             <Lobby/>
             <ToastContainer/>
         </>

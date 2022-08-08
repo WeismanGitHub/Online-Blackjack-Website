@@ -33,7 +33,7 @@ function Chat({socket, gameId }) {
     };
 
     return (
-        <div class='leftColumn30Percent'>
+        <div class='chatBox'>
             {messages.map(message => {
                 return (
                     <div>
