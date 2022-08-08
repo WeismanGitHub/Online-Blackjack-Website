@@ -38,11 +38,7 @@ app.use(cors())
 app.use((req, res, next) => {
     res.deleteAllCookies = function () {
         for (let cookie of Object.keys(req.cookies)) {
-            this.clearCookie(cookie)
-        }
-    
-        for (let cookie of Object.keys(req.signedCookies)) {
-            this.clearCookie(cookie)
+            res.clearCookie(cookie)
         }
         
         return this
