@@ -18,8 +18,8 @@ const register = async (req, res) => {
     const token = user.createJWT()
 
     res.status(StatusCodes.CREATED)
+    .deleteAllCookies()
     .cookie('token', token)
-    .clearCookie('gameId')
     .redirect('/')
 }
 
@@ -40,8 +40,8 @@ const login = async (req, res) => {
     const token = user.createJWT()
 
     res.status(StatusCodes.OK)
+    .deleteAllCookies()
     .cookie('token', token)
-    .clearCookie('gameId')
     .redirect('/')
 }
 
@@ -49,8 +49,7 @@ const logout = async (req, res) => {
     await removePlayerFromGame(req.cookies.gameId, req.user._id)
 
     res.status(StatusCodes.OK)
-    .clearCookie('token')
-    .clearCookie('gameId')
+    .deleteAllCookies()
     .redirect('/authentication')
 }
 
