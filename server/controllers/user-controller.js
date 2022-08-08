@@ -5,16 +5,8 @@ const { StatusCodes } = require('http-status-codes')
 const updateUser = async (req, res) => {
     const newName = req.body.name
     const newPassword = req.body.password
-    const updateObject = {}
-    
-    if (newName) {
-        updateObject.name = newName
-    }
-    
-    if (newPassword) {
-        updateObject.password = newPassword
-    }
-    
+    //If a password or name is entered then it's added to updateObject.
+    const updateObject = { ...newPassword && { password: newPassword }, ...newName && { name: newName } }
     
     if (Object.keys(updateObject).length) {
         const user = await UserSchema.findOneAndUpdate(
