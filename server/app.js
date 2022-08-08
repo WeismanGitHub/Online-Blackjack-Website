@@ -36,8 +36,18 @@ app.use(helmet());
 app.use(cors())
 
 app.use((req, res, next) => {
-    console.log('Cookies: ', req.cookies);
-    console.log('Signed Cookies: ', req.signedCookies);
+    req.deleteAllCookies = function () {
+        for (let cookie of Object.keys(this.cookies)) {
+            this.clearCookie(cookie)
+        }
+    
+        for (let cookie of Object.keys(this.signedCookies)) {
+            this.clearCookie(cookie)
+        }
+
+        return this
+    }
+
     next()
 })
 
