@@ -3,11 +3,10 @@ const { removePlayerFromGame } = require('../helpers')
 const { StatusCodes } = require('http-status-codes')
 
 const updateUser = async (req, res) => {
-    const newName = req.body.name
-    const newPassword = req.body.password
+    const { name, password } = req.body
     //If a password or name is entered then it's added to updateObject.
-    const updateObject = { ...newPassword && { password: newPassword }, ...newName && { name: newName } }
-    
+    const updateObject = { ...password && { password: password }, ...name && { name: name } }
+
     if (Object.keys(updateObject).length) {
         const user = await UserSchema.findOneAndUpdate(
             req.user._id,
