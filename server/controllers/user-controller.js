@@ -19,7 +19,7 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
     const gameId = req.cookies.gameId
     const userId = req.user._id
-
+    
     if (gameId) {
         await removePlayerFromGame(gameId, userId)
     }

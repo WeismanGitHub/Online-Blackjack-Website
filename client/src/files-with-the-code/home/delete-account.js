@@ -11,7 +11,7 @@ function DeleteAccount() {
         event.preventDefault();
 
         if (window.confirm('Do you want to delete your account?')) {
-            axios.post('/api/v1/account/delete')
+            axios.post('/api/v1/user/delete')
             .then(res => {
                 navigate('/authentication');
             }).catch(error => {

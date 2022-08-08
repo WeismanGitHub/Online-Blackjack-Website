@@ -8,7 +8,7 @@ function AccountRelated() {
     async function updateUserHandler(event) {
         event.preventDefault();
 
-        axios.post('/api/v1/account/update', {
+        axios.post('/api/v1/user/update', {
             name: event.target[0].value,
             password: event.target[1].value
         }).then(res => {
