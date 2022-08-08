@@ -32,7 +32,7 @@ const deleteUser = async (req, res) => {
     const userId = req.user._id
     const game = await UserSchema.findById(userId).lean().select('-_id gameId')
 
-    if (Object.keys(game)?.length) {
+    if (game && Object.keys(game).length) {
         await removePlayerFromGame(game.gameId, userId)
     }
 
