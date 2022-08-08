@@ -2,6 +2,7 @@ const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const { Server } = require("socket.io");
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const express = require('express');
 const helmet = require('helmet');
 const http = require("http");
@@ -13,7 +14,6 @@ require('dotenv').config();
 
 const errorHandler = require('./middleware/error-handler')
 const authenticationMiddleware = require('./middleware/authentication-middleware')
-const socketAuthentication = require('./socket/socket-authentication')
 
 const authenticationRouter = require('./routers/authentication-router')
 const userRouter = require('./routers/user-router')
@@ -25,7 +25,13 @@ app.use(express.static(path.join(__dirname, '../', 'client', 'build')))
 app.use(cors());
 const io = new Server(http.createServer(app));
 
-io.use((socket, next) => socketAuthentication(socket, next))
+io.use((socket, next) => {
+    console.log('authenticating')
+    socket.user = jwt.verify(socket.handshake.auth.token, process.env.JWT_SECRET)
+    .catch(err => next(err))
+    next();
+})
+
 io.on('connection', socketHandler);
 
 app.use(express.urlencoded({ extended: true }))
@@ -60,7 +66,7 @@ app.use(errorHandler)
 const start = async () => {
     try {
         const port = process.env.PORT || 5000
-        await mongoose.connect(process.env.LOCAL_MONGO_URI, { autoIndex: true })
+        mongoose.connect(process.env.LOCAL_MONGO_URI, { autoIndex: true })
         console.log('Connected to database...')
         app.listen(port, console.log(`Server is starting on ${port}...`));
     } catch (error) {

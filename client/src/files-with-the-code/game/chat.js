@@ -11,7 +11,7 @@ function Chat({socket, gameId }) {
         });
 
         socket.on('connect_error', (err) => {
-            console.log(err)
+            console.log(err.message)
         })
     }, [socket]);
     

@@ -3,6 +3,8 @@ const UserSchema = require('../schemas/user-schema')
 
 function socketHandler(socket) {
     const { name, _id } = socket.user
+
+    console.log('test')
     
     socket.on('joinGame', (data) => {
         const gameId = data.gameId
