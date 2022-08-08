@@ -6,26 +6,31 @@ const updateUser = async (req, res) => {
     const newName = req.body.name
     const newPassword = req.body.password
     const updateObject = {}
-
+    
     if (newName) {
         updateObject.name = newName
     }
-
+    
     if (newPassword) {
         updateObject.password = newPassword
     }
-
-    const user = await UserSchema.findOneAndUpdate(
-        req.user._id,
-        updateObject,
-        { new: true }
-    ).select('-_id')
-
-    const token = user.createJWT()
-
-    res.status(StatusCodes.OK)
-    .cookie('token', token)
-    .json({ message: 'Updated user!'})
+    
+    
+    if (Object.keys(updateObject).length) {
+        const user = await UserSchema.findOneAndUpdate(
+            req.user._id,
+            updateObject,
+            { new: true }
+        ).select('-_id')
+    
+        const token = user.createJWT()
+    
+        res.status(StatusCodes.OK)
+        .cookie('token', token)
+        .json({ message: 'Updated user!'})
+    } else {
+        throw new Error('Nothing updated!')
+    }
 }
 
 const deleteUser = async (req, res) => {
