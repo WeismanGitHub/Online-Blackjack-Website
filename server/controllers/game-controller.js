@@ -4,8 +4,9 @@ const { removePlayerFromGame } = require('../helpers')
 const { StatusCodes } = require('http-status-codes')
 
 const createGame = async (req, res) => {
+    const userId = req.user._id
+    
     try {
-        const userId = req.user._id
         const game = await GameSchema.create({ creatorId: userId })
         
         await UserSchema.updateOne({ _id: userId }, { gameId: game._id })

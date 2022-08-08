@@ -2,7 +2,6 @@ const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const { Server } = require("socket.io");
 const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
 const express = require('express');
 const helmet = require('helmet');
 const http = require("http");
@@ -23,14 +22,9 @@ const socketHandler= require('./socket/socket-handler')
 const app = express();
 app.use(express.static(path.join(__dirname, '../', 'client', 'build')))
 app.use(cors());
-const io = new Server(http.createServer(app));
 
-io.use((socket, next) => {
-    console.log('authenticating')
-    socket.user = jwt.verify(socket.handshake.auth.token, process.env.JWT_SECRET)
-    .catch(err => next(err))
-    next();
-})
+const server = http.createServer(app)
+const io = new Server(server);
 
 io.on('connection', socketHandler);
 
@@ -68,7 +62,7 @@ const start = async () => {
         const port = process.env.PORT || 5000
         mongoose.connect(process.env.LOCAL_MONGO_URI, { autoIndex: true })
         console.log('Connected to database...')
-        app.listen(port, console.log(`Server is starting on ${port}...`));
+        server.listen(port, console.log(`Server is starting on ${port}...`));
     } catch (error) {
         console.error(error);
     };
