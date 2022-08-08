@@ -37,16 +37,20 @@ UserSchema.pre('save', async function() {
 UserSchema.pre('findOneAndUpdate', async function() {
     const user = this.getUpdate();
 
-    if ((1 > user.name.length) || (user.name.length > 15)) {
-        throw new Error('Name must be between 1 and 15 characters.')
+    if (user.name) {
+        if ((1 > user.name.length) || (user.name.length > 15)) {
+            throw new Error('Name must be between 1 and 15 characters.')
+        }
     }
 
-    if ((6 > user.password.length) || (user.password.length > 50)) {
-        throw new Error('Password must be between 6 and 50 characters.')
+    if (user.password) {
+        if ((6 > user.password.length) || (user.password.length > 50)) {
+            throw new Error('Password must be between 6 and 50 characters.')
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(user.password, salt);
     }
-    
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
 });
 
 

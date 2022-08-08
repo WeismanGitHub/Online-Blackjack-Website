@@ -3,9 +3,21 @@ const { removePlayerFromGame } = require('../helpers')
 const { StatusCodes } = require('http-status-codes')
 
 const updateUser = async (req, res) => {
+    const newName = req.body.name
+    const newPassword = req.body.password
+    const updateObject = {}
+
+    if (newName) {
+        updateObject.name = newName
+    }
+
+    if (newPassword) {
+        updateObject.password = newPassword
+    }
+
     const user = await UserSchema.findOneAndUpdate(
         req.user._id,
-        req.body,
+        updateObject,
         { new: true }
     ).select('-_id')
 
@@ -17,11 +29,11 @@ const updateUser = async (req, res) => {
 }
 
 const deleteUser = async (req, res) => {
-    const gameId = req.cookies.gameId
     const userId = req.user._id
-    
-    if (gameId) {
-        await removePlayerFromGame(gameId, userId)
+    const game = await UserSchema.findById(userId).lean().select('-_id gameId')
+
+    if (Object.keys(game)?.length) {
+        await removePlayerFromGame(game.gameId, userId)
     }
 
     await UserSchema.deleteOne({ _id: userId })

@@ -8,7 +8,7 @@ async function removePlayerFromGame(gameId, userId) {
         { new: true }
     ).select('-_id players').lean()
 
-    if (!game.players.length) {
+    if (!game?.players?.length) {
         await GameSchema.deleteOne( { _id: gameId })
     }
     
