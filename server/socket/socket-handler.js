@@ -6,7 +6,7 @@ const cookie = require('cookie');
 function socketHandler(socket) {
     const token = cookie.parse(socket.handshake.headers.cookie).token
     const { name, _id } = jwt.verify(token, process.env.JWT_SECRET)
-    console.log(name, _id)
+    
     socket.on('joinGame', (data) => {
         const gameId = data.gameId
         socket.join(gameId)

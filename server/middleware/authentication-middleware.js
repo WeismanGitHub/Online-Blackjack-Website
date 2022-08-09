@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 
 const authentication = async (req, res, next) => {
     const token = req.cookies.token;
-    console.log(token)
 
     if (!token) {
         throw new Error('Authentication Invalid');

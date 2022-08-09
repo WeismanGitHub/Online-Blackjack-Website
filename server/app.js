@@ -40,10 +40,8 @@ app.use((req, res, next) => {
         for (let cookie of Object.keys(req.cookies)) {
             res.clearCookie(cookie)
         }
-        
         return this
     }
-    
     next()
 })
 
@@ -63,8 +61,8 @@ const start = async () => {
         mongoose.connect(process.env.LOCAL_MONGO_URI, { autoIndex: true })
         console.log('Connected to database...')
         server.listen(port, console.log(`Server is starting on ${port}...`));
-    } catch (error) {
-        console.error(error);
+    } catch (err) {
+        console.error(err);
     };
 };
 
