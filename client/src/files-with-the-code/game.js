@@ -40,7 +40,6 @@ function Game() {
 
     function copyId(event) {
         event.preventDefault()
-
         navigator.clipboard.writeText(gameId)
         .then(() => {
             toast('Copied!')

@@ -6,23 +6,22 @@ const cookie = require('cookie');
 function socketHandler(socket) {
     const token = cookie.parse(socket.handshake.headers.cookie).token
     const { name, _id } = jwt.verify(token, process.env.JWT_SECRET)
-    
+        
     socket.on('joinGame', async (data) => {
         const gameId = data.gameId
         socket.join(gameId)
 
-        const players = (await GameSchema.findOne({ gameId: gameId }).select('-_id players').lean()).players
         socket.to(gameId).emit('receiveMessage', { userName: name, message: ' joined!' });
     })
 
     socket.on('getAllPlayers', async (data) => {
         const gameId = data.gameId
+        console.log('getting all players')
+        const players = (await GameSchema.findById(gameId).select('-_id players').lean()).players
+        const userPromises = players.map(player => UserSchema.findById(player.userId).select('name').lean())
 
-        const players = (await GameSchema.findOne({ gameId: gameId }).select('-_id players').lean()).players
-        const playerPromises = players.map(player => UserSchema.findById(player.userId).select('name').lean())
-
-        Promise.all(playerPromises).then(players => {
-            socket.to(gameId).emit('sendAllPlayers', players)
+        Promise.all(userPromises).then(users => {
+            socket.to(gameId).emit('sendAllPlayers', users)
         })
     })
 

@@ -3,6 +3,10 @@ import React, { useState, useEffect } from 'react';
 function Players({ socket, gameId }) {
     const [players, setPlayers] = useState([]);
     
+    useEffect(()=>{
+        socket.emit('getAllPlayers', { gameId: gameId })
+    }, [])
+
     useEffect(() => {
         socket.on('sendAllPlayers', (players) => {
             setPlayers(players)
@@ -13,7 +17,6 @@ function Players({ socket, gameId }) {
         })
     }, [socket]);
 
-    socket.emit('getAllPlayers', { gameId: gameId })
 
 
     return (
@@ -21,6 +24,7 @@ function Players({ socket, gameId }) {
            {players.map(player => {
                 return (<>
                     {player.name}
+                    <br/>
                     <br/>
                 </>)
             })}

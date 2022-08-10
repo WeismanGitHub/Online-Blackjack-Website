@@ -29,6 +29,7 @@ const createGame = async (req, res) => {
 
 const joinGame = async (req, res) => {
     const gameId = req.body.gameId
+    console.log(gameId)
     const userId = req.user._id
 
     const updateData = await GameSchema.updateOne(
