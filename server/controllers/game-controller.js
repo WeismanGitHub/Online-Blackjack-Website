@@ -48,7 +48,7 @@ const joinGame = async (req, res) => {
         .cookie('gameId', gameId, { expires : new Date(Date.now() + 999999*999999) })
         .redirect('/game')
     } else {
-        throw new Error('Please leave your current game.')
+        throw new Error('That game Id is invalid or you are already in a game.')
     }
 }
 

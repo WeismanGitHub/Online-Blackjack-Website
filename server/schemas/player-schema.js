@@ -5,6 +5,7 @@ const PlayerSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Types.ObjectId,
         required: [true, '[Server Error] Please provide a user id.'],
+        unique: true
     },
     hand: [CardSchema],
     playerStage: {
