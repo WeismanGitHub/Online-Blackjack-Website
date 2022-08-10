@@ -1,3 +1,5 @@
+// packages
+const rateLimit = require('express-rate-limit')
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const { Server } = require("socket.io");
@@ -11,23 +13,32 @@ const cors = require('cors');
 require('express-async-errors');
 require('dotenv').config();
 
+// import middleware
 const errorHandler = require('./middleware/error-handler')
 const authenticationMiddleware = require('./middleware/authentication-middleware')
-
 const authenticationRouter = require('./routers/authentication-router')
 const userRouter = require('./routers/user-router')
 const gameRouter = require('./routers/game-router')
 const socketHandler= require('./socket/socket-handler')
 
+// server setup
 const app = express();
-app.use(express.static(path.join(__dirname, '../', 'client', 'build')))
-app.use(cors());
 
 const server = http.createServer(app)
 const io = new Server(server);
 
 io.on('connection', socketHandler);
 
+const limiter = rateLimit({
+    windowMs: 500,
+	max: 10,
+	standardHeaders: true,
+	legacyHeaders: false,
+})
+
+// use middleware
+app.use(limiter)
+app.use(express.static(path.join(__dirname, '../', 'client', 'build')))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
 app.use(cookieParser());
@@ -49,6 +60,7 @@ app.use((req, res, next) => {
     next()
 })
 
+// routes
 app.use('/api/v1/authentication', authenticationRouter)
 app.use('/api/v1/user', authenticationMiddleware, userRouter)
 app.use('/api/v1/game', authenticationMiddleware, gameRouter)
@@ -59,6 +71,7 @@ app.get('*', (req, res) => {
 
 app.use(errorHandler)
 
+// start
 const start = async () => {
     try {
         const port = process.env.PORT || 5000
