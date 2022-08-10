@@ -27,17 +27,13 @@ function Game() {
     function leaveGame(event) {
         event.preventDefault();
 
+        socket.emit('leaveGame', { gameId: gameId, token: getCookie('token') })
         axios.post('/api/v1/game/leave')
-        .then(async (res) => {
-            socket.emit('sendMessage', {
-                gameId: gameId,
-                token: getCookie('token'),
-                message: 'left!'
-            })
-            
+        .then(res => {
             navigate('/');
-        }).catch(error => {
-            toast.error(error.response.data.message)
+        })
+        .catch(err => {
+            toast.error(err.response.data.message)
         })
     }
 

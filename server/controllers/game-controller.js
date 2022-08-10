@@ -53,7 +53,10 @@ const joinGame = async (req, res) => {
 }
 
 const leaveGame = async (req, res) => {
-    await removePlayerFromGame(req.cookies.gameId, req.user._id)
+    const userId = req.user._id
+    const gameId = await UserSchema.findOne(userId).select('-_id gameId').lean().gameId
+    
+    await removePlayerFromGame(gameId, userId)
 
     res.status(StatusCodes.OK)
     .clearCookie('gameId')
