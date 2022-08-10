@@ -9,10 +9,10 @@ const updateUser = async (req, res) => {
 
     if (Object.keys(updateObject).length) {
         const user = await UserSchema.findOneAndUpdate(
-            req.user._id,
+            { _id: req.user._id },
             updateObject,
             { new: true }
-        ).select('-_id')
+        )
     
         const token = user.createJWT()
     
