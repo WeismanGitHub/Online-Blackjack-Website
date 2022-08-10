@@ -9,14 +9,14 @@ function socketHandler(socket) {
     
     socket.on('joinGame', async (data) => {
         const gameId = data.gameId
-
+        socket.join(gameId)
+        
         const players = (await GameSchema.findOne({ gameId: gameId }).select('-_id players').lean()).players
 
         for (let player of players) {
             const user = await UserSchema.findById(player.userId)
             socket.to(gameId).emit('addPlayer', user)
         }
-
         socket.to(gameId).emit('receiveMessage', { userName: name, message: ' joined!' });
     })
 
