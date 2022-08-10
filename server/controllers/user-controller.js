@@ -17,7 +17,7 @@ const updateUser = async (req, res) => {
         const token = user.createJWT()
     
         res.status(StatusCodes.OK)
-        .cookie('token', token)
+        .cookie('token', token, { expires : new Date(Date.now() + 999999*999999) })
         .json({ message: 'Updated user!'})
     } else {
         throw new Error('Nothing updated!')

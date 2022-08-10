@@ -12,14 +12,14 @@ const createGame = async (req, res) => {
         await UserSchema.updateOne({ _id: userId }, { gameId: game._id })
     
         res.status(StatusCodes.CREATED)
-        .cookie('gameId', game._id)
+        .cookie('gameId', game._id, { expires : new Date(Date.now() + 999999*999999) })
         .redirect('/game')
     } catch(err) {
         if (err.message.includes('duplicate key error collection')) {
             const gameId = await UserSchema.findById(userId).select('-_id gameId')
 
             res.status(StatusCodes.CONFLICT)
-            .cookie('gameId', gameId.gameId)
+            .cookie('gameId', gameId.gameId, { expires : new Date(Date.now() + 999999*999999) })
             .redirect('/game')
         } else {
             throw new Error(err.message)
@@ -45,7 +45,7 @@ const joinGame = async (req, res) => {
 
     if (updateData.modifiedCount) {
         res.status(StatusCodes.OK)
-        .cookie('gameId', gameId)
+        .cookie('gameId', gameId, { expires : new Date(Date.now() + 999999*999999) })
         .redirect('/game')
     } else {
         throw new Error('Please leave your current game.')

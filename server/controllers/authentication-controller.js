@@ -19,7 +19,7 @@ const register = async (req, res) => {
 
     res.status(StatusCodes.CREATED)
     .deleteAllCookies()
-    .cookie('token', token)
+    .cookie('token', token, { expires : new Date(Date.now() + 999999*999999) })
     .redirect('/')
 }
 
@@ -41,7 +41,7 @@ const login = async (req, res) => {
 
     res.status(StatusCodes.OK)
     .deleteAllCookies()
-    .cookie('token', token)
+    .cookie('token', token, { expires : new Date(Date.now() + 999999*999999) })
     .redirect('/')
 }
 
