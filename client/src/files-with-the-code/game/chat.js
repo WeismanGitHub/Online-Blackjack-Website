@@ -7,7 +7,6 @@ function Chat({ socket, gameId }) {
 
     useEffect(() => {
         socket.on('receiveMessage', (data) => {
-            console.log('test')
             setMessages((list) => [...list, data]);
         });
 

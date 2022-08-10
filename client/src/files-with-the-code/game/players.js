@@ -5,7 +5,9 @@ function Players({ socket }) {
 
     useEffect(() => {
         socket.on('addPlayer', (player) => {
-            setPlayers((players) => [...players, player]);
+            if (!players.includes(player)) {
+                setPlayers((players) => [...players, player])
+            }
         });
 
         socket.on('connect_error', (err) => {

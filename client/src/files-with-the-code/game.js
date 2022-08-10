@@ -22,7 +22,9 @@ function Game() {
     const gameId = getCookie('gameId')
     const socket = io.connect('/')
     socket.gameId = gameId
+    
     socket.emit('joinGame', { gameId: gameId, token: getCookie('token') })
+    socket.emit('getAllPlayer', { gameId: gameId, token: getCookie('token') })
 
     function leaveGame(event) {
         event.preventDefault();
