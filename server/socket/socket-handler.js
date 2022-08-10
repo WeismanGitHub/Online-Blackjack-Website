@@ -12,23 +12,18 @@ function socketHandler(socket) {
         socket.join(gameId)
 
         const players = (await GameSchema.findOne({ gameId: gameId }).select('-_id players').lean()).players
-
-        for (let player of players) {
-            const user = await UserSchema.findById(player.userId).select('name').lean()
-            socket.to(gameId).emit('addPlayer', user)
-        }
         socket.to(gameId).emit('receiveMessage', { userName: name, message: ' joined!' });
     })
 
-    socket.on('getAllPLayers', async (data) => {
+    socket.on('getAllPlayers', async (data) => {
         const gameId = data.gameId
 
         const players = (await GameSchema.findOne({ gameId: gameId }).select('-_id players').lean()).players
+        const playerPromises = players.map(player => UserSchema.findById(player.userId).select('name').lean())
 
-        for (let player of players) {
-            const user = await UserSchema.findById(player.userId)
-            socket.to(gameId).emit('addPlayer', user)
-        }
+        Promise.all(playerPromises).then(players => {
+            socket.to(gameId).emit('sendAllPlayers', players)
+        })
     })
 
     socket.on('sendMessage', (data) => {

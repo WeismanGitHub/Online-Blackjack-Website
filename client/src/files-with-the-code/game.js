@@ -23,13 +23,12 @@ function Game() {
     const socket = io.connect('/')
     socket.gameId = gameId
     
-    socket.emit('joinGame', { gameId: gameId, token: getCookie('token') })
-    socket.emit('getAllPlayer', { gameId: gameId, token: getCookie('token') })
+    socket.emit('joinGame', { gameId: gameId })
 
     function leaveGame(event) {
         event.preventDefault();
 
-        socket.emit('leaveGame', { gameId: gameId, token: getCookie('token') })
+        socket.emit('leaveGame', { gameId: gameId })
         axios.post('/api/v1/game/leave')
         .then(res => {
             navigate('/');
@@ -55,7 +54,7 @@ function Game() {
                 Leave Game
             </button>
             <button class='copyIdButton' onClick={copyId}>Copy Game ID</button>
-            <Players socket={socket}/>
+            <Players socket={socket} gameId={gameId}/>
             <ToastContainer/>
         </>
     )
