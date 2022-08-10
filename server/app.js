@@ -32,13 +32,17 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
 app.use(cookieParser());
 app.use(compression());
-app.use(helmet());
+app.use(helmet.contentSecurityPolicy({ directives: { 'script-src-attr': null } }));
 app.use(cors())
 
 app.use((req, res, next) => {
     res.deleteAllCookies = function () {
         for (let cookie of Object.keys(req.cookies)) {
             res.clearCookie(cookie)
+        }
+        
+        for (let signedCookie of Object.keys(req.signedCookies)) {
+            res.clearCookie(signedCookie)
         }
         return this
     }
