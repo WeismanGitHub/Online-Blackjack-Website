@@ -22,7 +22,6 @@ function socketHandler(socket) {
 
     socket.on('getAllPLayers', async (data) => {
         const gameId = data.gameId
-        socket.join(gameId)
 
         const players = (await GameSchema.findOne({ gameId: gameId }).select('-_id players').lean()).players
 
@@ -38,8 +37,10 @@ function socketHandler(socket) {
     });
 
     socket.on('leaveGame', (data) => {
+        const gameId = data.gameId
+        socket.leave(gameId)
         delete data.token
-        socket.to(data.gameId).emit('receiveMessage', { userName: name, message: 'Left!' })
+        socket.to(gameId).emit('receiveMessage', { userName: name, message: 'Left!' })
     })
 }
 
