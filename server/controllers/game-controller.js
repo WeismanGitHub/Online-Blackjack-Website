@@ -36,14 +36,16 @@ const joinGame = async (req, res) => {
         { $addToSet: { players: { userId: userId } } },
     ).catch(async err => {
         if (err.message.includes('duplicate')) {
-            const gameId = await UserSchema.findById(userId).select('-_id gameId')
             await removePlayerFromGame(gameId, req.user._id)
         } else if (err.message.includes('Cast to ObjectId failed')) {
             throw new Error("Game Id doesn't exist.")
         }
     })
 
+    
     if (updateData.modifiedCount) {
+        await UserSchema.updateOne({ _id: userId }, { gameId: gameId })
+
         res.status(StatusCodes.OK)
         .cookie('gameId', gameId, { expires : new Date(Date.now() + 999999*999999) })
         .redirect('/game')
@@ -53,10 +55,7 @@ const joinGame = async (req, res) => {
 }
 
 const leaveGame = async (req, res) => {
-    const userId = req.user._id
-    const gameId = await UserSchema.findOne(userId).select('-_id gameId').lean().gameId
-    
-    await removePlayerFromGame(gameId, userId)
+    await removePlayerFromGame(req.cookies.gameId, req.user._id)
 
     res.status(StatusCodes.OK)
     .clearCookie('gameId')

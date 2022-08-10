@@ -8,7 +8,11 @@ async function removePlayerFromGame(gameId, userId) {
         { new: true }
     ).select('-_id players').lean()
 
-    if (!game?.players?.length) {
+    if (!game) {
+        throw new Error("Game doesn't exist.")
+    }
+
+    if (!game.players.length) {
         await GameSchema.deleteOne( { _id: gameId })
     }
     
