@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { getCookie } from '../../helpers'
 
-function Chat({socket, gameId }) {
+function Chat({ socket, gameId }) {
     const [currentMessage, setCurrentMessage] = useState('')
     const [messages, setMessages] = useState([]);
 
     useEffect(() => {
         socket.on('receiveMessage', (data) => {
+            console.log('test')
             setMessages((list) => [...list, data]);
         });
 

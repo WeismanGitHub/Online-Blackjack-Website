@@ -5,7 +5,7 @@ import { cookieExists } from '../helpers'
 import React, { useState } from 'react';
 import { getCookie } from '../helpers'
 import io from 'socket.io-client';
-import Lobby from './game/lobby'
+import Players from './game/players'
 import Chat from './game/chat'
 import Play from './game/play'
 import axios from 'axios'
@@ -57,7 +57,7 @@ function Game() {
                 Leave Game
             </button>
             <button class='copyIdButton' onClick={copyId}>Copy Game ID</button>
-            <Lobby/>
+            <Players socket={socket}/>
             <ToastContainer/>
         </>
     )
