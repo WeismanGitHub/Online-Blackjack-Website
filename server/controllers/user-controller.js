@@ -8,8 +8,8 @@ const updateUser = async (req, res) => {
     const updateObject = { ...password && { password: password }, ...name && { name: name } }
 
     if (Object.keys(updateObject).length) {
-        const user = await UserSchema.findOneAndUpdate(
-            { _id: req.user._id },
+        const user = await UserSchema.findByIdAndUpdate(
+            req.user._id,
             updateObject,
             { new: true }
         )
