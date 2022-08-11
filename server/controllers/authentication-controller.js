@@ -46,7 +46,9 @@ const login = async (req, res) => {
 }
 
 const logout = async (req, res) => {
-    await removePlayerFromGame(req.cookies.gameId, req.user._id)
+    if (req.cookies.gameId) {
+        await removePlayerFromGame(req.cookies.gameId, req.user._id)
+    }
 
     res.status(StatusCodes.OK)
     .deleteAllCookies()
