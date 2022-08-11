@@ -63,11 +63,18 @@ const leaveGame = async (req, res) => {
     .redirect('/')
 }
 
-const getGame = async (req, res) => {
-    const game = await GameSchema.findById(req.cookies.gameId).lean()
-
+const getAllPlayers = async (req, res) => {
+    const players = (await GameSchema.findById(req.cookies.gameId).select('-_id players').lean()).players
+    const userPromises = players.map(player => UserSchema.findById(player.userId).select('name').lean())
+    const users = await Promise.all(userPromises)
+            
     res.status(StatusCodes.OK)
-    .json({ game: game })
+    .send(users)
 }
 
-module.exports = { createGame, getGame, joinGame, leaveGame }
+module.exports = {
+    createGame,
+    getAllPlayers,
+    joinGame,
+    leaveGame
+}

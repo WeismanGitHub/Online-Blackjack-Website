@@ -16,7 +16,6 @@ function socketHandler(socket) {
 
     socket.on('getAllPlayers', async (data) => {
         const gameId = data.gameId
-        console.log('getting all players')
         const players = (await GameSchema.findById(gameId).select('-_id players').lean()).players
         const userPromises = players.map(player => UserSchema.findById(player.userId).select('name').lean())
 

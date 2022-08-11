@@ -1,9 +1,19 @@
+import { ToastContainer, toast } from 'react-toastify';
 import React, { useState, useEffect } from 'react';
+import 'react-toastify/dist/ReactToastify.css';
+
+const axios = require('axios').default;
 
 function Players({ socket, gameId }) {
     const [players, setPlayers] = useState([]);
     
     useEffect(()=>{
+        axios.get('/api/v1/game/players').then(res => {
+            setPlayers(res.data)
+        }).catch(error => {
+            toast.error(error.response.data.message)
+        })
+            
         socket.emit('getAllPlayers', { gameId: gameId })
     }, [])
 
@@ -28,6 +38,7 @@ function Players({ socket, gameId }) {
                     <br/>
                 </>)
             })}
+            <ToastContainer/>
         </div>
     )
 }

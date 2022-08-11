@@ -1,6 +1,6 @@
 const express = require('express')
 const {
-    getGame,
+    getAllPlayers,
     createGame,
     joinGame,
     leaveGame
@@ -8,10 +8,10 @@ const {
 
 const router = express.Router()
 
-router.route('/').get(getGame);
+router.route('/players').get(getAllPlayers);
 
 router.route('/create').post(createGame);
-//no leave route because once every player leaves the game it's deleted
+//no leave delete because once every player leaves the game it's deleted
 
 router.route('/join').post(joinGame);
 router.route('/leave').post(leaveGame);
