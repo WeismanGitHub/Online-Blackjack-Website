@@ -1,6 +1,8 @@
 const UserSchema = require('../schemas/user-schema')
 const { removePlayerFromGame } = require('../helpers')
 const { StatusCodes } = require('http-status-codes')
+const multer = require('multer');
+const path = require('path');
 
 const updateUser = async (req, res) => {
     const { name, password } = req.body
@@ -48,8 +50,42 @@ const getUser = async (req, res) => {
     res.status(StatusCodes.OK)
     .json({ user: user })
 }
+
+const addProfileIcon = async (req, res) => {
+    const allowedMimeTypes = ['image/png', 'image/jpeg', 'image/webp']
+    const profileIconId = await UserSchema.findById(req.user._Id)?.profileIcon?._id
+
+    if (!profileIconId) {
+        throw new Error("Account doesn't exist.")
+    }
+
+    const storage = multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, '../profile-icons');
+        },
+        fileFilter: (req, file, cb) => {
+            if (allowedMimeTypes.includes(file.mimetype)) {
+                cb(null, true);
+            } else {
+                cb(null, false);
+                return cb(new Error('File must be a webp, jpeg, or png.'));
+            }
+        },
+        filename: async function (req, file, cb) {
+            cb(null, profileIconId + path.extname(file.originalname));
+        }
+    });
+
+    const upload = multer({ storage: storage });
+    upload.single('icon')
+
+    res.status(StatusCodes.OK)
+    .send(profileIconId)
+}
+
 module.exports = {
     updateUser,
     deleteUser,
     getUser,
+    addProfileIcon,
 }

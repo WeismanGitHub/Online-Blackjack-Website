@@ -26,7 +26,8 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         required: [true, '[Server Error] Please provide a balance'],
         default: 100
-    }
+    },
+    profileIcon: new mongoose.Schema({})
 })
 
 UserSchema.pre('save', async function() {
