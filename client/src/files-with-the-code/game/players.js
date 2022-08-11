@@ -13,8 +13,8 @@ function Players({ socket, gameId }) {
         }).catch(error => {
             toast.error(error.response.data.message)
         })
-            
-        socket.emit('getAllPlayers', { gameId: gameId })
+        
+        socket.emit('updateAllPlayers', { gameId: gameId })
     }, [])
 
     useEffect(() => {

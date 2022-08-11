@@ -22,6 +22,18 @@ async function removePlayerFromGame(gameId, userId) {
     )
 }
 
+async function getAllUsersInGame(gameId) {
+    const players = (await GameSchema.findById(gameId).select('-_id players').lean())?.players
+    
+    if (!players) {
+        throw new Error('Game has been deleted.')
+    }
+
+    const userPromises = players.map(player => UserSchema.findById(player.userId).select('name').lean())
+    return await Promise.all(userPromises)
+}
+
 module.exports = {
-    removePlayerFromGame
+    removePlayerFromGame,
+    getAllUsersInGame,
 }

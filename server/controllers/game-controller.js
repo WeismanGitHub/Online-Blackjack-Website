@@ -1,6 +1,6 @@
 const UserSchema = require('../schemas/user-schema')
 const GameSchema = require('../schemas/game-schema')
-const { removePlayerFromGame } = require('../helpers')
+const { removePlayerFromGame, getAllUsersInGame } = require('../helpers')
 const { StatusCodes } = require('http-status-codes')
 
 const createGame = async (req, res) => {
@@ -29,7 +29,6 @@ const createGame = async (req, res) => {
 
 const joinGame = async (req, res) => {
     const gameId = req.body.gameId
-    console.log(gameId)
     const userId = req.user._id
 
     const updateData = await GameSchema.updateOne(
@@ -64,10 +63,8 @@ const leaveGame = async (req, res) => {
 }
 
 const getAllPlayers = async (req, res) => {
-    const players = (await GameSchema.findById(req.cookies.gameId).select('-_id players').lean()).players
-    const userPromises = players.map(player => UserSchema.findById(player.userId).select('name').lean())
-    const users = await Promise.all(userPromises)
-            
+    const users = await getAllUsersInGame(req.cookies.gameId)
+    
     res.status(StatusCodes.OK)
     .send(users)
 }

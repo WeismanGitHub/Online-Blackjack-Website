@@ -27,10 +27,11 @@ function Game() {
 
     function leaveGame(event) {
         event.preventDefault();
-
-        socket.emit('leaveGame', { gameId: gameId })
+        
         axios.post('/api/v1/game/leave')
         .then(res => {
+            socket.emit('updateAllPlayers', { gameId: gameId })
+            socket.emit('leaveGame', { gameId: gameId })
             navigate('/');
         })
         .catch(err => {

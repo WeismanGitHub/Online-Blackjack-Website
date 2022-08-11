@@ -1,10 +1,9 @@
-const GameSchema = require('../schemas/game-schema')
-const UserSchema = require('../schemas/user-schema')
+const { getAllUsersInGame } = require('../helpers')
 const jwt = require('jsonwebtoken');
 const cookie = require('cookie');
 
 function socketHandler(socket) {
-    const token = cookie.parse(socket.handshake.headers.cookie).token
+    const token = cookie.parse(socket.handshake.headers.cookie ?? "").token
     const { name, _id } = jwt.verify(token, process.env.JWT_SECRET)
         
     socket.on('joinGame', async (data) => {
@@ -14,14 +13,18 @@ function socketHandler(socket) {
         socket.to(gameId).emit('receiveMessage', { userName: name, message: ' joined!' });
     })
 
-    socket.on('getAllPlayers', async (data) => {
+    socket.on('updateAllPlayers', async (data) => {
         const gameId = data.gameId
-        const players = (await GameSchema.findById(gameId).select('-_id players').lean()).players
-        const userPromises = players.map(player => UserSchema.findById(player.userId).select('name').lean())
-
-        Promise.all(userPromises).then(users => {
-            socket.to(gameId).emit('sendAllPlayers', users)
+        const users = await getAllUsersInGame(gameId)
+        .catch(err => {
+            if (err.message == 'Game has been deleted.') {
+                return
+            } else {
+                throw new Error(err.message)
+            }
         })
+
+        socket.to(gameId).emit('sendAllPlayers', users)
     })
 
     socket.on('sendMessage', (data) => {
@@ -29,11 +32,11 @@ function socketHandler(socket) {
         socket.to(data.gameId).emit('receiveMessage', {...data, userName: name });
     });
 
-    socket.on('leaveGame', (data) => {
+    socket.on('leaveGame', async (data) => {
         const gameId = data.gameId
-        socket.leave(gameId)
         delete data.token
         socket.to(gameId).emit('receiveMessage', { userName: name, message: 'Left!' })
+        socket.leave(gameId)
     })
 }
 
