@@ -53,11 +53,7 @@ const getUser = async (req, res) => {
 
 const addProfileIcon = async (req, res) => {
     const allowedMimeTypes = ['image/png', 'image/jpeg', 'image/webp']
-    const profileIconId = await UserSchema.findById(req.user._Id)?.profileIcon?._id
-
-    if (!profileIconId) {
-        throw new Error("Account doesn't exist.")
-    }
+    const profileIconId = await UserSchema.findById(req.user._Id).profileIcon._id
 
     const storage = multer.diskStorage({
         destination: function (req, file, cb) {
@@ -65,9 +61,9 @@ const addProfileIcon = async (req, res) => {
         },
         fileFilter: (req, file, cb) => {
             if (allowedMimeTypes.includes(file.mimetype)) {
-                cb(null, true);
+                cb(null, true)
             } else {
-                cb(null, false);
+                cb(null, false)
                 return cb(new Error('File must be a webp, jpeg, or png.'));
             }
         },
@@ -76,7 +72,7 @@ const addProfileIcon = async (req, res) => {
         }
     });
 
-    const upload = multer({ storage: storage });
+    const upload = multer({ storage: storage, limits: { fileSize: 2000000 }});
     upload.single('icon')
 
     res.status(StatusCodes.OK)

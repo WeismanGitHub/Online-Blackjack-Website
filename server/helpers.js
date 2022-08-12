@@ -29,7 +29,7 @@ async function getAllUsersInGame(gameId) {
         throw new Error('Game has been deleted.')
     }
 
-    const userPromises = players.map(player => UserSchema.findById(player.userId).select('name').lean())
+    const userPromises = players.map(player => UserSchema.findById(player.userId).select('-password').lean())
     return await Promise.all(userPromises)
 }
 
