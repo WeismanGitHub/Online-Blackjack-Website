@@ -5,6 +5,7 @@ const {
     deleteUser,
     getUser,
     addProfileIcon,
+    removeProfileIcon,
 } = require('../controllers/user-controller')
 
 const router = express.Router()
@@ -12,6 +13,7 @@ const router = express.Router()
 router.route('/update').post(updateUser);
 router.route('/delete').post(deleteUser);
 router.route('/addIcon').post(addProfileIcon)
+router.route('removeIcon').post(removeProfileIcon)
 router.route('/:userId').post(getUser);
 
 module.exports = router

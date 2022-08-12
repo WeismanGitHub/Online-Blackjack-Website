@@ -3,6 +3,7 @@ const { removePlayerFromGame } = require('../helpers')
 const { StatusCodes } = require('http-status-codes')
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 const updateUser = async (req, res) => {
     const { name, password } = req.body
@@ -75,8 +76,18 @@ const addProfileIcon = async (req, res) => {
     const upload = multer({ storage: storage, limits: { fileSize: 2000000 }});
     upload.single('icon')
 
-    res.status(StatusCodes.OK)
-    .send(profileIconId)
+    res.status(StatusCodes.OK).end()
+}
+
+const removeProfileIcon = async (req, res) => {
+    const profileIconId = await UserSchema.findById(req.user._Id).profileIcon._id
+
+    await fs.unlink(path.join(__dirname, '..', 'profile-icons', `${profileIconId}.jpg`))
+    .catch(err => {
+        throw new Error('Error deleting file.')
+    })
+
+    res.status(StatusCodes.OK).end()
 }
 
 module.exports = {
@@ -84,4 +95,5 @@ module.exports = {
     deleteUser,
     getUser,
     addProfileIcon,
+    removeProfileIcon
 }
