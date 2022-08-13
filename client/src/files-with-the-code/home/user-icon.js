@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 const axios = require('axios').default;
 
 
-function ProfileIcon({iconId}) {
+function userIcon({iconId}) {
     const [imgfile, uploadIcon] = useState()
     
     function OnChange(event) {
@@ -31,4 +31,4 @@ function ProfileIcon({iconId}) {
     </>)
 }
 
-export default ProfileIcon
+export default userIcon

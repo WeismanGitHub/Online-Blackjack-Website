@@ -3,7 +3,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import DeleteAccount from './delete-account'
 import React, { useState, useEffect } from 'react';
 import Logout from './logout'
-import ProfileIcon from './profile-icon'
+import userIcon from './user-icon'
 const axios = require('axios').default;
 
 function AccountRelated() {
@@ -40,7 +40,7 @@ function AccountRelated() {
             Name: {user.name}
             <br/>
             <br/>
-            <ProfileIcon iconId={user.profileIconId}/>
+            <userIcon iconId={user.userIconId}/>
             <br/>
             <br/>
             Balance: {user.balance}

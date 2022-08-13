@@ -3,6 +3,7 @@ const { removePlayerFromGame } = require('../helpers')
 const { StatusCodes } = require('http-status-codes')
 const multer = require('multer');
 const path = require('path');
+const glob = require('glob')
 const fs = require('fs');
 
 const updateUser = async (req, res) => {
@@ -15,7 +16,7 @@ const updateUser = async (req, res) => {
             req.user._id,
             updateObject,
             { new: true }
-        ).select('name balance profileIconId')
+        ).select('name balance userIconId')
         const token = user.createJWT()
 
         res.status(StatusCodes.OK)
@@ -43,7 +44,7 @@ const deleteUser = async (req, res) => {
 }
 
 const getUser = async (req, res) => {
-    const user = await UserSchema.findById(req.params.userId || req.user._id).select('-_id name profileIcon balance').lean()
+    const user = await UserSchema.findById(req.params.userId || req.user._id).select('-_id name userIcon balance').lean()
 
     if (!user) throw new Error('User does not exist.')
 
@@ -51,13 +52,13 @@ const getUser = async (req, res) => {
     .json({ user: user })
 }
 
-const addProfileIcon = async (req, res) => {
+const addUserIcon = async (req, res) => {
     const allowedMimeTypes = ['image/png', 'image/jpeg', 'image/webp']
-    const profileIconId = await UserSchema.findById(req.user._Id).profileIcon._id
+    const userIconId = await UserSchema.findById(req.user._Id).userIcon._id
 
     const storage = multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null, '../profile-icons');
+            cb(null, '../user-icons');
         },
         fileFilter: (req, file, cb) => {
             if (allowedMimeTypes.includes(file.mimetype)) {
@@ -68,7 +69,7 @@ const addProfileIcon = async (req, res) => {
             }
         },
         filename: async function (req, file, cb) {
-            cb(null, profileIconId + path.extname(file.originalname));
+            cb(null, userIconId + path.extname(file.originalname));
         }
     });
 
@@ -78,10 +79,10 @@ const addProfileIcon = async (req, res) => {
     res.status(StatusCodes.OK).end()
 }
 
-const removeProfileIcon = async (req, res) => {
-    const profileIconId = await UserSchema.findById(req.user._Id).profileIcon._id
+const removeUserIcon = async (req, res) => {
+    const userIconId = await UserSchema.findById(req.user._Id).userIcon._id
 
-    await fs.unlink(path.join(__dirname, '..', 'profile-icons', `${profileIconId}.jpg`))
+    await fs.unlink(path.join(__dirname, '..', 'user-icons', `${userIconId}.jpg`))
     .catch(err => {
         throw new Error('Error deleting file.')
     })
@@ -89,10 +90,25 @@ const removeProfileIcon = async (req, res) => {
     res.status(StatusCodes.OK).end()
 }
 
+const getUserIcon = async (req, res) => {
+    const userIconId = req.params.iconId || (await UserSchema.findById(req.user._id).select('-_id userIcon').lean()).userIconId
+
+    glob(`${userIconId}.*`, (err, files) => {
+        if (err) {
+            throw new Error('User Icon could not be found.')
+        } else {
+            res.status(StatusCodes.OK)
+            .sendFile(files[0])
+        }
+    });
+
+}
+
 module.exports = {
     updateUser,
     deleteUser,
     getUser,
-    addProfileIcon,
-    removeProfileIcon
+    addUserIcon,
+    removeUserIcon,
+    getUserIcon,
 }
