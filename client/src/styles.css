@@ -54,6 +54,11 @@ button {
     overflow-x: hidden;
 }
 
+.homeImage {
+    width: 100px;
+    height: 100px;
+}
+
 .leaveGameButton {
     float: left;
     width: 17%;
