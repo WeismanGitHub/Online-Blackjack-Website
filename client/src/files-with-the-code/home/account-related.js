@@ -3,11 +3,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import DeleteAccount from './delete-account'
 import React, { useState, useEffect } from 'react';
 import Logout from './logout'
-import profileIcon from './profile-icon'
+import ProfileIcon from './profile-icon'
 const axios = require('axios').default;
 
 function AccountRelated() {
-    const [user, setUser] = useState({})
+    const [user, setUser] = useState()
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -37,18 +37,20 @@ function AccountRelated() {
     return (
         <div className='rightColumn'>
             <br/>
-            Name: {user?.name}
+            Name: {user.name}
             <br/>
             <br/>
-            Balance: {user?.balance}
+            <ProfileIcon iconId={user.profileIconId}/>
             <br/>
-            {/* <profileIcon iconId={user?.profileIconId}/> */}
+            <br/>
+            Balance: {user.balance}
+            <br/>
+            <br/>
             <form onSubmit={updateUserHandler} className='entryForm'>
-                <br/>
                 <div>Update Account</div>
                 Name:
                 <br/>
-                <input id='Your Name' type='text' name='name' placeholder={user?.name} maxlength='15' minlength='1'/>
+                <input id='Your Name' type='text' name='name' placeholder={user.name} maxlength='15' minlength='1'/>
                 <br/>
                 Password:
                 <br/>

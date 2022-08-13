@@ -4,12 +4,12 @@ import { toast } from 'react-toastify';
 const axios = require('axios').default;
 
 
-function UploadProfilePic({iconId}) {
-    const [imgfile, uploadimg] = useState([])
+function ProfileIcon({iconId}) {
+    const [imgfile, uploadIcon] = useState()
     
     function OnChange(event) {
         if (event.target.files.length !== 0) {
-            uploadimg(imgfile => [...imgfile, URL.createObjectURL(event.target.files[0])])
+          uploadIcon(imgfile => [...imgfile, URL.createObjectURL(event.target.files[0])])
         }
 
         axios.post('/api/v1/user/addIcon')
@@ -31,4 +31,4 @@ function UploadProfilePic({iconId}) {
     </>)
 }
 
-export default UploadProfilePic
+export default ProfileIcon
