@@ -5,14 +5,26 @@ const axios = require('axios').default;
 
 
 function userIcon({iconId}) {
-    const [imgfile, uploadIcon] = useState()
+    const [icon, setIcon] = useState()
     
+    useEffect(() => {
+        const fetchUserIcon = async () => {
+            const res = await axios.get('/api/v1/user/icon')
+            .catch(err => {
+                toast.error(err.response.data.message)
+            })
+        setIcon(res.data.user)
+        }
+    
+        fetchUserIcon()
+    }, [])
+
     function OnChange(event) {
         if (event.target.files.length !== 0) {
-          uploadIcon(imgfile => [...imgfile, URL.createObjectURL(event.target.files[0])])
+            uploadIcon(imgfile => [...imgfile, URL.createObjectURL(event.target.files[0])])
         }
 
-        axios.post('/api/v1/user/addIcon')
+        axios.post('/api/v1/user/icon/add')
         .catch(error => {
             toast.error(error.response.data.message)
         })

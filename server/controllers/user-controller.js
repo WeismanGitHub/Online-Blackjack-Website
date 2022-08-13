@@ -92,7 +92,7 @@ const removeUserIcon = async (req, res) => {
 
 const getUserIcon = async (req, res) => {
     const userIconId = req.params.iconId || (await UserSchema.findById(req.user._id).select('-_id userIcon').lean()).userIconId
-
+    console.log(userIconId)
     glob(`${userIconId}.*`, (err, files) => {
         if (err) {
             throw new Error('User Icon could not be found.')
