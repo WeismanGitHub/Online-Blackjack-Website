@@ -1,32 +1,54 @@
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DeleteAccount from './delete-account'
+import React, { useState, useEffect } from 'react';
 import Logout from './logout'
+import profileIcon from './profile-icon'
 const axios = require('axios').default;
 
 function AccountRelated() {
+    const [user, setUser] = useState({})
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            const res = await axios.get('/api/v1/user')
+            .catch(err => {
+                toast.error(err.response.data.message)
+            })
+            setUser(res.data.user)
+        }
+        fetchUser()
+    }, [])
+
     async function updateUserHandler(event) {
         event.preventDefault();
-
+        
         axios.post('/api/v1/user/update', {
             name: event.target[0].value,
             password: event.target[1].value
         }).then(res => {
+            setUser(res.data.user)
             toast('Account updated!')
-        }).catch(error => {
-            toast.error(error.response.data.message)
+        }).catch(err => {
+            toast.error(err.response.data.message)
         })
     }
 
     return (
         <div className='rightColumn'>
             <br/>
+            Name: {user?.name}
+            <br/>
+            <br/>
+            Balance: {user?.balance}
+            <br/>
+            {/* <profileIcon iconId={user?.profileIconId}/> */}
             <form onSubmit={updateUserHandler} className='entryForm'>
                 <br/>
                 <div>Update Account</div>
                 Name:
                 <br/>
-                <input id='Your Name' type='text' name='name' placeholder="name" maxlength='15' minlength='1'/>
+                <input id='Your Name' type='text' name='name' placeholder={user?.name} maxlength='15' minlength='1'/>
                 <br/>
                 Password:
                 <br/>
@@ -42,6 +64,6 @@ function AccountRelated() {
             <ToastContainer/>
         </div>
     )
-}
+    }
 
 export default AccountRelated

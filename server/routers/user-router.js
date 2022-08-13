@@ -14,6 +14,6 @@ router.route('/update').post(updateUser);
 router.route('/delete').post(deleteUser);
 router.route('/addIcon').post(addProfileIcon)
 router.route('removeIcon').post(removeProfileIcon)
-router.route('/:userId').post(getUser);
+router.route('/:userId?').get(getUser)
 
 module.exports = router

@@ -9,19 +9,18 @@ const updateUser = async (req, res) => {
     const { name, password } = req.body
     //If a password or name is entered then it's added to updateObject.
     const updateObject = { ...password && { password: password }, ...name && { name: name } }
-
+    
     if (Object.keys(updateObject).length) {
         const user = await UserSchema.findByIdAndUpdate(
             req.user._id,
             updateObject,
             { new: true }
-        )
-    
+        ).select('name balance profileIconId')
         const token = user.createJWT()
-    
+
         res.status(StatusCodes.OK)
         .cookie('token', token, { expires : new Date(Date.now() + 999999*999999) })
-        .json({ message: 'Updated user!'})
+        .json({ user: user })
     } else {
         throw new Error('Nothing updated!')
     }
@@ -44,7 +43,7 @@ const deleteUser = async (req, res) => {
 }
 
 const getUser = async (req, res) => {
-    const user = await UserSchema.findById(req.params.userId).lean()
+    const user = await UserSchema.findById(req.params.userId || req.user._id).select('-_id name profileIcon balance').lean()
 
     if (!user) throw new Error('User does not exist.')
 
