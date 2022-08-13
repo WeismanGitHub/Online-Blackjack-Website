@@ -2,6 +2,7 @@ const { getAllUsersInGame } = require('../helpers')
 const jwt = require('jsonwebtoken');
 const cookie = require('cookie');
 
+// No need to sanitize input because jsx is automatically sanitized.
 function socketHandler(socket) {
     const token = cookie.parse(socket.handshake.headers.cookie ?? "").token
     const { name, _id } = jwt.verify(token, process.env.JWT_SECRET)
