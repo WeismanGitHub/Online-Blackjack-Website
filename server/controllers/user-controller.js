@@ -17,6 +17,7 @@ const updateUser = async (req, res) => {
             updateObject,
             { new: true }
         ).select('name balance userIconId')
+
         const token = user.createJWT()
 
         res.status(StatusCodes.OK)
@@ -29,7 +30,7 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
     const userId = req.user._id
-    const game = await UserSchema.findById(userId).lean().select('-_id gameId')
+    const game = await UserSchema.findById(userId).select('-_id gameId').lean()
 
     if (game && Object.keys(game).length) {
         await removePlayerFromGame(game.gameId, userId)
@@ -44,7 +45,7 @@ const deleteUser = async (req, res) => {
 }
 
 const getUser = async (req, res) => {
-    const user = await UserSchema.findById(req.params.userId || req.user._id).select('-_id name userIcon balance').lean()
+    const user = await UserSchema.findById(req.params.userId || req.user._id).select('-_id name iconId balance').lean()
 
     if (!user) throw new Error('User does not exist.')
 
@@ -54,8 +55,8 @@ const getUser = async (req, res) => {
 
 const addUserIcon = async (req, res) => {
     const allowedMimeTypes = ['image/png', 'image/jpeg', 'image/webp']
-    const userIconId = await UserSchema.findById(req.user._Id).userIcon._id
-
+    const userIconId = await UserSchema.findById(req.user._Id).select('-_id iconId')
+    console.log(userIconId)
     const storage = multer.diskStorage({
         destination: function (req, file, cb) {
             cb(null, '../user-icons');
@@ -80,7 +81,7 @@ const addUserIcon = async (req, res) => {
 }
 
 const removeUserIcon = async (req, res) => {
-    const userIconId = await UserSchema.findById(req.user._Id).userIcon._id
+    const userIconId = await UserSchema.findById(req.user._Id).iconId
 
     await fs.unlink(path.join(__dirname, '..', 'user-icons', `${userIconId}.jpg`))
     .catch(err => {
@@ -91,12 +92,12 @@ const removeUserIcon = async (req, res) => {
 }
 
 const getUserIcon = async (req, res) => {
-    const userIconId = req.params.iconId || (await UserSchema.findById(req.user._id).select('-_id userIcon').lean()).userIconId
-    console.log(userIconId)
+    const userIconId = req.params.iconId || (await UserSchema.findById(req.user._id).select('-_id iconId').lean()).iconId
     glob(`${userIconId}.*`, (err, files) => {
         if (err) {
             throw new Error('User Icon could not be found.')
         } else {
+            console.log(files)
             res.status(StatusCodes.OK)
             .sendFile(files[0])
         }

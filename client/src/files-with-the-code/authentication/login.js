@@ -20,7 +20,7 @@ function Login() {
     }
 
     return (
-        <div className='entryForm'>
+        <div className='authenticationForm'>
             <form onSubmit={loginHandler}>
                 <h2>Login</h2>
                 Name:

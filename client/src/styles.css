@@ -16,13 +16,23 @@ button {
     border: 1px solid rgb(100,125,100);
 }
 
-.entryForm {
+.updateAccountForm {
     padding: 5px;
     padding-left: 15px;
     padding-right: 15px;
     margin: auto;
     max-width: fit-content;
     border: 1px solid rgb(100,125,100);
+}
+
+.authenticationForm {
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin: auto;
+    max-width: fit-content;
+    border: 1px solid rgb(100,125,100);
+    font-size: 150%;
 }
 
 .leftColumn {

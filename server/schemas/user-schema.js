@@ -27,7 +27,7 @@ const UserSchema = new mongoose.Schema({
         required: [true, '[Server Error] Please provide a balance'],
         default: 100
     },
-    userIconId: {
+    iconId: {
         type: mongoose.Types.ObjectId,
         required: [true, '[Server Error] Please provide a user icon.'],
         default: mongoose.Types.ObjectId()

@@ -21,7 +21,7 @@ function Register() {
     }
 
     return (
-        <div className='entryForm'>
+        <div className='authenticationForm'>
             <form onSubmit={registerHandler}>
                 <h2>Register</h2>
                 Name:
