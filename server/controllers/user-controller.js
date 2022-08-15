@@ -53,7 +53,7 @@ const getUser = async (req, res) => {
 }
 
 const addUserIcon = async (req, res) => {
-    const allowedMimeTypes = ['image/png', 'image/jpeg', 'image/webp']
+    const allowedMimeTypes = ['image/jpeg']
     const userIconId = await UserSchema.findById(req.user._Id).select('-_id iconId')
     console.log(userIconId)
     const storage = multer.diskStorage({
@@ -65,7 +65,7 @@ const addUserIcon = async (req, res) => {
                 cb(null, true)
             } else {
                 cb(null, false)
-                return cb(new Error('File must be a webp, jpeg, or png.'));
+                return cb(new Error('File must be a jpeg.'));
             }
         },
         filename: async function (req, file, cb) {
@@ -93,25 +93,20 @@ const removeUserIcon = async (req, res) => {
 const getUserIcon = async (req, res) => {
     const userIconId = req.params.iconId || (await UserSchema.findById(req.user._id).select('-_id iconId').lean()).iconId
 
-    fs.access(path.resolve(__dirname, `../user-icons/${userIconId}.png`), (err) => {
+    fs.access(path.resolve(__dirname, `../user-icons/${userIconId}.jpeg`), async (err) => {
         if (!err) {
-            res.status(StatusCodes.OK).sendFile(path.resolve(__dirname, `../user-icons/${userIconId}.png`))
+            return await res.status(StatusCodes.OK).sendFile(path.resolve(__dirname, `../user-icons/${userIconId}.jpeg`))
         }
-    })
 
-    fs.access(path.resolve(__dirname, `../user-icons/${userIconId}.webp`), (err) => {
-        if (!err) {
-            res.status(StatusCodes.OK).sendFile(path.resolve(__dirname, `../user-icons/${userIconId}.webp`))
-        }
+        fs.access(path.resolve(__dirname, `../user-icons/${userIconId}.jpg`), async (err) => {
+            if (!err) {
+                return await res.status(StatusCodes.OK).sendFile(path.resolve(__dirname, `../user-icons/${userIconId}.jpg`))
+            }
+    
+            res.status(StatusCodes.OK).sendFile(path.resolve(__dirname, '..', 'user-icons', 'default.png'))
+        })
     })
-
-    fs.access(path.resolve(__dirname, `../user-icons/${userIconId}.jpg`), (err) => {
-        if (!err) {
-            return res.status(StatusCodes.OK).sendFile(path.resolve(__dirname, `../user-icons/${userIconId}.jpg`))
-        }
-        
-        res.status(StatusCodes.OK).sendFile(path.resolve(__dirname, '..', 'user-icons', 'default.png'))
-    })
+    
 }
 
 module.exports = {
