@@ -109,6 +109,13 @@ button {
     padding-right: 50px;
 }
 
+.mediumButton {
+    font-size: 125%;
+    padding: 12.5px;
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
 button:active {
     filter: brightness(95%);
 }

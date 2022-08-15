@@ -18,7 +18,7 @@ function Logout() {
         })
     }
 
-    return <button className='bigButton' onClick={onClick}>Logout</button>
+    return <button className='mediumButton' onClick={onClick}>Logout</button>
 }
 
 export default Logout

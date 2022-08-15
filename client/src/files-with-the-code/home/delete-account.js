@@ -21,7 +21,7 @@ function DeleteAccount() {
 
     }
 
-    return <button className='bigButton' onClick={onClick}>Delete Account</button>
+    return <button className='mediumButton' onClick={onClick}>Delete Account</button>
 }
 
 export default DeleteAccount
