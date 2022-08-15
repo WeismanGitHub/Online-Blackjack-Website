@@ -11,12 +11,12 @@ const {
 
 const router = express.Router()
 
-router.route('/update').post(updateUser);
-router.route('/delete').post(deleteUser);
-router.route('/:userId?').get(getUser)
-
 router.route('/icon/add').post(addUserIcon)
 router.route('icon/remove').post(removeUserIcon)
 router.route('/icon/:iconId?').get(getUserIcon)
+
+router.route('/update').post(updateUser);
+router.route('/delete').post(deleteUser);
+router.route('/:userId?').get(getUser)
 
 module.exports = router

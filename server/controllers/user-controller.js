@@ -3,7 +3,6 @@ const { removePlayerFromGame } = require('../helpers')
 const { StatusCodes } = require('http-status-codes')
 const multer = require('multer');
 const path = require('path');
-const glob = require('glob')
 const fs = require('fs');
 
 const updateUser = async (req, res) => {
@@ -93,16 +92,26 @@ const removeUserIcon = async (req, res) => {
 
 const getUserIcon = async (req, res) => {
     const userIconId = req.params.iconId || (await UserSchema.findById(req.user._id).select('-_id iconId').lean()).iconId
-    glob(`${userIconId}.*`, (err, files) => {
-        if (err) {
-            throw new Error('User Icon could not be found.')
-        } else {
-            console.log(files)
-            res.status(StatusCodes.OK)
-            .sendFile(files[0])
-        }
-    });
 
+    fs.access(path.resolve(__dirname, `../user-icons/${userIconId}.png`), (err) => {
+        if (!err) {
+            res.status(StatusCodes.OK).sendFile(path.resolve(__dirname, `../user-icons/${userIconId}.png`))
+        }
+    })
+
+    fs.access(path.resolve(__dirname, `../user-icons/${userIconId}.webp`), (err) => {
+        if (!err) {
+            res.status(StatusCodes.OK).sendFile(path.resolve(__dirname, `../user-icons/${userIconId}.webp`))
+        }
+    })
+
+    fs.access(path.resolve(__dirname, `../user-icons/${userIconId}.jpg`), (err) => {
+        if (!err) {
+            return res.status(StatusCodes.OK).sendFile(path.resolve(__dirname, `../user-icons/${userIconId}.jpg`))
+        }
+        
+        res.status(StatusCodes.OK).sendFile(path.resolve(__dirname, '..', 'user-icons', 'default.png'))
+    })
 }
 
 module.exports = {

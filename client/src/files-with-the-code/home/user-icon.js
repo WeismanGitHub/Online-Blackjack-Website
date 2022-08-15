@@ -9,12 +9,9 @@ function UserIcon({ iconId }) {
     
     useEffect(() => {
         const fetchUserIcon = async () => {
-            const res = await axios.get(`/api/v1/user/icon/${iconId}`)
-            .catch(err => {
-                toast.error(err.response.data.message)
-            })
-        console.log(res)
-        setIcon(res)
+            const res = await axios.get(`/api/v1/user/icon/${iconId}`, { responseType: 'blob' })
+            const imageURL = URL.createObjectURL(res.data)
+            setIcon(imageURL)
         }
     
         fetchUserIcon()
@@ -32,7 +29,7 @@ function UserIcon({ iconId }) {
     }
 
     return (<>
-        <input type="file" className='bigButton' onChange={OnChange}/>Add Icon
+        {/* <input type="file" className='bigButton' onChange={OnChange}/>Add Icon */}
         <img src={icon} class='homeImage' alt=''/>
     </>)
 }

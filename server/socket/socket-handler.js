@@ -21,7 +21,7 @@ function socketHandler(socket) {
             if (err.message == 'Game has been deleted.') {
                 return
             } else {
-                throw new Error(err.message)
+                console.log(err.message)
             }
         })
 
