@@ -25,7 +25,7 @@ const socketHandler= require('./socket/socket-handler')
 const app = express();
 
 const server = http.createServer(app)
-const io = new Server(server);
+const io = new Server(server, { timeout: 2000 });
 
 io.on('connection', socketHandler);
 
