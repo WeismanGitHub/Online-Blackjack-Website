@@ -40,7 +40,7 @@ function AccountRelated() {
             Name: {user?.name}
             <br/>
             <br/>
-            <UserIcon iconId={user?.iconId}/>
+            <UserIcon/>
             <br/>
             <br/>
             Balance: {user?.balance}

@@ -64,6 +64,11 @@ button {
     overflow-y: scroll;
     overflow-x: hidden;
 }
+.lobbyIcon {
+    width: 150px;
+    height: 150px;
+    border-radius: 20px;
+}
 
 .homeImage {
     width: 100px;

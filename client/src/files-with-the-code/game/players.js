@@ -6,16 +6,16 @@ const axios = require('axios').default;
 
 function Players({ socket, gameId }) {
     const [players, setPlayers] = useState([]);
-    
-    useEffect(()=>{
+
+    useEffect(()=> {
         axios.get('/api/v1/game/players').then(res => {
             setPlayers(res.data)
         }).catch(error => {
             toast.error(error.response.data.message)
         })
-        
-        socket.emit('updateAllPlayers', { gameId: gameId })
     }, [])
+    
+    socket.emit('updateAllPlayers', { gameId: gameId })
 
     useEffect(() => {
         socket.on('sendAllPlayers', (players) => {
@@ -27,13 +27,13 @@ function Players({ socket, gameId }) {
         })
     }, [socket]);
 
-
-
     return (
         <div class='playersBox'>
            {players.map(player => {
                 return (<>
                     {player.name}
+                    <br/>
+                    <img src={`/api/v1/user/icon/${player.iconId}`} class='lobbyIcon'/>
                     <br/>
                     <br/>
                 </>)
