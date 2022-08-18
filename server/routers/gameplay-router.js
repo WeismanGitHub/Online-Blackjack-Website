@@ -2,10 +2,10 @@ const express = require('express')
 
 const {
     startGame,
-} = require('../controllers/game-controller')
+} = require('../controllers/gameplay-controller')
 
 const router = express.Router()
 
-router.route('/start').get(startGame);
+router.route('/start').post(startGame);
 
 module.exports = router
