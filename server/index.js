@@ -74,15 +74,11 @@ app.get('*', (req, res) => {
 app.use(errorHandler)
 
 // start
-const start = async () => {
-    try {
-        const port = process.env.PORT || 5000
-        mongoose.connect(process.env.LOCAL_MONGO_URI, { autoIndex: true })
-        console.log('Connected to database...')
-        server.listen(port, console.log(`Server is starting on ${port}...`));
-    } catch (err) {
-        console.error(err);
-    };
+try {
+    const port = process.env.PORT || 5000
+    mongoose.connect(process.env.LOCAL_MONGO_URI, { autoIndex: true })
+    console.log('Connected to database...')
+    server.listen(port, console.log(`Server is starting on ${port}...`));
+} catch (err) {
+    console.error(err);
 };
-
-start()
