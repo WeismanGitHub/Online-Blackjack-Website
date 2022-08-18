@@ -14,12 +14,13 @@ require('express-async-errors');
 require('dotenv').config();
 
 // import middleware
-const errorHandler = require('./middleware/error-handler')
 const authenticationMiddleware = require('./middleware/authentication-middleware')
 const authenticationRouter = require('./routers/authentication-router')
+const gameplayRouter = require('./routers/gameplay-router')
+const errorHandler = require('./middleware/error-handler')
+const socketHandler= require('./socket/socket-handler')
 const userRouter = require('./routers/user-router')
 const gameRouter = require('./routers/game-router')
-const socketHandler= require('./socket/socket-handler')
 
 // server setup
 const app = express();
@@ -61,9 +62,10 @@ app.use((req, res, next) => {
 })
 
 // routes
-app.use('/api/v1/authentication', authenticationRouter)
-app.use('/api/v1/user', authenticationMiddleware, userRouter)
+app.use('/api/v1/gameplay', authenticationMiddleware, gameplayRouter)
 app.use('/api/v1/game', authenticationMiddleware, gameRouter)
+app.use('/api/v1/user', authenticationMiddleware, userRouter)
+app.use('/api/v1/authentication', authenticationRouter)
 
 app.get('*', (req, res) => {
     res.sendFile('index.html', { root: path.join(__dirname, '../client/build/') });
