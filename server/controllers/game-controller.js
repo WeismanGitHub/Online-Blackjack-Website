@@ -1,6 +1,6 @@
+const { removePlayerFromGame, getAllUsersInGame } = require('../helpers')
 const UserSchema = require('../schemas/user-schema')
 const GameSchema = require('../schemas/game-schema')
-const { removePlayerFromGame, getAllUsersInGame } = require('../helpers')
 const { StatusCodes } = require('http-status-codes')
 
 const createGame = async (req, res) => {
@@ -73,5 +73,5 @@ module.exports = {
     createGame,
     getAllPlayers,
     joinGame,
-    leaveGame
+    leaveGame,
 }

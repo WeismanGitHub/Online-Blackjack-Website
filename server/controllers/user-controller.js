@@ -1,5 +1,5 @@
-const UserSchema = require('../schemas/user-schema')
 const { removePlayerFromGame } = require('../helpers')
+const UserSchema = require('../schemas/user-schema')
 const { StatusCodes } = require('http-status-codes')
 const multer = require('multer');
 const path = require('path');

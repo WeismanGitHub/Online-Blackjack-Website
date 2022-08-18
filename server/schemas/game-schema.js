@@ -1,5 +1,5 @@
-const CardSchema = require('./card-schema')
 const PlayerSchema = require('./player-schema')
+const CardSchema = require('./card-schema')
 const shuffle = require('shuffle-array')
 const mongoose = require('mongoose');
 
