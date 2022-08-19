@@ -1,2 +1,1 @@
-I used React for frontend, Express for backend, and Mongodb for the database. Check it out here: https://
-Online-Blackjack-Website.weisman.repl.co.
+This was going to be an online blackjack website with an in game chat, but I've lost interest in the project.
