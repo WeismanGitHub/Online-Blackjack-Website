@@ -53,6 +53,17 @@ button {
     font-size: 125%;
 }
 
+input[type="file"] {
+    display: none;
+}
+
+.customFileUpload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 3px 6px;
+    cursor: pointer;
+}
+
 .chatBox {
     float: left;
     width: 35%;

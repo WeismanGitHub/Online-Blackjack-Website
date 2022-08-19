@@ -54,7 +54,7 @@ const getUser = async (req, res) => {
 
 const addUserIcon = async (req, res) => {
     const allowedMimeTypes = ['image/jpeg']
-    const userIconId = await UserSchema.findById(req.user._Id).select('-_id iconId')
+    const userIconId = (await UserSchema.findById(req.user._id).select('-_id iconId')).iconId
     console.log(userIconId)
     const storage = multer.diskStorage({
         destination: function (req, file, cb) {
@@ -103,7 +103,7 @@ const getUserIcon = async (req, res) => {
                 return await res.status(StatusCodes.OK).sendFile(path.resolve(__dirname, `../user-icons/${userIconId}.jpg`))
             }
     
-            res.status(StatusCodes.OK).sendFile(path.resolve(__dirname, '..', 'user-icons', 'default.png'))
+            res.status(StatusCodes.OK).sendFile(path.resolve(__dirname, '../user-icons/default.png'))
         })
     })
     

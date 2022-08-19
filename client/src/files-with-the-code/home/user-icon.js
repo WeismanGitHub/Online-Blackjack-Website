@@ -17,8 +17,10 @@ function UserIcon() {
     }
 
     return (<>
-        {/* <input type="file" className='bigButton' onChange={OnChange}/>Add Icon */}
         <img src='/api/v1/user/icon/' class='homeImage'/>
+        <br/>
+        <input type="file" id="file" onChange={OnChange} action='/api/v1/user/icon/add/' method='post'/>
+        <label for="file" class="customFileUpload">Update Icon</label>
     </>)
 }
 
